@@ -19,3 +19,5 @@
   * This is used by the user to select the values they want to use when converting the image
 - Added a load image button, that loads a preview of the users image to an image box
 - Added a convert button that will start the process of converting the users image
+
+## Test push from laptop
