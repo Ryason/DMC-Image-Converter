@@ -15,6 +15,9 @@ namespace DMCConverter
     {
 
         public int tickedCount = 0;
+        public Image toConvert;
+        public Image resized;
+        public List<String> selectedDMCValues;
 
         public Form1()
         {
@@ -27,7 +30,7 @@ namespace DMCConverter
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void LoadImageButon_Click(object sender, EventArgs e)
+        public void LoadImageButon_Click(object sender, EventArgs e)
         {
             #region Load Image
             
@@ -47,6 +50,7 @@ namespace DMCConverter
 
             //load image to image display box
             UserImageBox.Image = image;
+            toConvert = image;
 
             #endregion
         }
@@ -55,13 +59,23 @@ namespace DMCConverter
         {
             tickedCount = dmcPaletteBox.CheckedItems.Count;
             paletteCount.Text = "Palette Count\n" + tickedCount.ToString() + " / " + dmcPaletteBox.Items.Count.ToString();
-
+            selectedDMCValues = new List<String>(dmcPaletteBox.CheckedItems.Cast<String>());
 
         }
 
-        private void ConvertButton_Click(object sender, EventArgs e)
-        {
 
+
+
+
+        public void ConvertButton_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        public void WidthValue_ValueChanged(object sender, EventArgs e)
+        {
+            resized = ConvertImg.resizeImage(toConvert, toConvert.Width, toConvert.Height, Convert.ToInt32(Math.Round(WidthValue.Value,0)));
+            UserImageBox.Image = resized;
         }
     }
 }
