@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29326.143
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DMCConverter", "DMCConverter\DMCConverter.csproj", "{618111EC-8F40-473F-8448-49C439E13D26}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{618111EC-8F40-473F-8448-49C439E13D26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{618111EC-8F40-473F-8448-49C439E13D26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{618111EC-8F40-473F-8448-49C439E13D26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{618111EC-8F40-473F-8448-49C439E13D26}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FF8F5B1E-6FD6-4978-9AF3-4B9189F42B24}
+	EndGlobalSection
+EndGlobal
