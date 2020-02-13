@@ -13,12 +13,12 @@ namespace DMCConverter
 {
     public partial class Form1 : Form
     {
-
+        public int maxSize = 100;
         public int tickedCount = 0;
         public Image toConvert;
         public Image resized;
         public List<String> selectedDMCValues;
-
+        
         public Form1()
         {
             InitializeComponent();
@@ -33,7 +33,9 @@ namespace DMCConverter
         public void LoadImageButon_Click(object sender, EventArgs e)
         {
             #region Load Image
-            
+            //sets current progress bar to 0
+            progressBar.Value = 0;
+
             //only allows user to pick and load image files
             openFileDialog1.Filter = "Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png) | *.jpg; *.jpeg; *.jpe; *.jfif; *.png";
 
@@ -52,29 +54,40 @@ namespace DMCConverter
             UserImageBox.Image = image;
             toConvert = image;
 
+            //resize image to 100 stitches
+            resized = ConvertImg.resizeImage(toConvert,
+                                             toConvert.Width,
+                                             toConvert.Height,
+                                             maxSize);
+            WidthValue.Value = 100;
             #endregion
         }
 
-        private void dmcPaletteBox_SelectedIndexChanged(object sender, EventArgs e)
+        public void dmcPaletteBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             tickedCount = dmcPaletteBox.CheckedItems.Count;
             paletteCount.Text = "Palette Count\n" + tickedCount.ToString() + " / " + dmcPaletteBox.Items.Count.ToString();
             selectedDMCValues = new List<String>(dmcPaletteBox.CheckedItems.Cast<String>());
-
         }
 
-
-
-
-
+        /// <summary>
+        /// Upon clicking the convert button, invoke the processImage method of the convertImage class
+        /// This will perfom the matching of DMC values to the pixels of the resized image
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void ConvertButton_Click(object sender, EventArgs e)
         {
             
+            ConvertImg.processImage(resized, selectedDMCValues, progressBar);
         }
 
         public void WidthValue_ValueChanged(object sender, EventArgs e)
         {
-            resized = ConvertImg.resizeImage(toConvert, toConvert.Width, toConvert.Height, Convert.ToInt32(Math.Round(WidthValue.Value,0)));
+            resized = ConvertImg.resizeImage(toConvert, 
+                                             toConvert.Width, 
+                                             toConvert.Height, 
+                                             Convert.ToInt32(Math.Round(WidthValue.Value,0)));
             UserImageBox.Image = resized;
         }
     }
