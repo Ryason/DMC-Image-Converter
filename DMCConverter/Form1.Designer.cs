@@ -40,6 +40,7 @@
             this.WidthLabel = new System.Windows.Forms.Label();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.HeightLabel = new System.Windows.Forms.Label();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.UserImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.WidthValue)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
@@ -67,7 +68,7 @@
             this.UserImageBox.MinimumSize = new System.Drawing.Size(120, 120);
             this.UserImageBox.Name = "UserImageBox";
             this.UserImageBox.Size = new System.Drawing.Size(120, 120);
-            this.UserImageBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.UserImageBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.UserImageBox.TabIndex = 1;
             this.UserImageBox.TabStop = false;
             // 
@@ -611,11 +612,19 @@
             this.HeightLabel.TabIndex = 10;
             this.HeightLabel.Text = "Height";
             // 
+            // progressBar
+            // 
+            this.progressBar.Location = new System.Drawing.Point(104, 210);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(74, 13);
+            this.progressBar.TabIndex = 11;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(279, 294);
+            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.HeightLabel);
             this.Controls.Add(this.numericUpDown1);
             this.Controls.Add(this.WidthLabel);
@@ -652,6 +661,7 @@
         private System.Windows.Forms.Label WidthLabel;
         private System.Windows.Forms.NumericUpDown numericUpDown1;
         private System.Windows.Forms.Label HeightLabel;
+        public System.Windows.Forms.ProgressBar progressBar;
     }
 }
 
