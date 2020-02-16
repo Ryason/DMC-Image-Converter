@@ -41,9 +41,11 @@
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.HeightLabel = new System.Windows.Forms.Label();
             this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.UserImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.WidthValue)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // LoadImageButon
@@ -85,6 +87,8 @@
             // 
             // dmcPaletteBox
             // 
+            this.dmcPaletteBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.dmcPaletteBox.CheckOnClick = true;
             this.dmcPaletteBox.FormattingEnabled = true;
             this.dmcPaletteBox.Items.AddRange(new object[] {
@@ -544,14 +548,15 @@
             "White\t\t252\t251\t248"});
             this.dmcPaletteBox.Location = new System.Drawing.Point(12, 25);
             this.dmcPaletteBox.Name = "dmcPaletteBox";
-            this.dmcPaletteBox.Size = new System.Drawing.Size(85, 259);
+            this.dmcPaletteBox.Size = new System.Drawing.Size(85, 589);
             this.dmcPaletteBox.TabIndex = 3;
             this.dmcPaletteBox.SelectedIndexChanged += new System.EventHandler(this.dmcPaletteBox_SelectedIndexChanged);
             // 
             // paletteCount
             // 
+            this.paletteCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.paletteCount.AutoSize = true;
-            this.paletteCount.Location = new System.Drawing.Point(100, 258);
+            this.paletteCount.Location = new System.Drawing.Point(100, 583);
             this.paletteCount.Name = "paletteCount";
             this.paletteCount.Size = new System.Drawing.Size(71, 26);
             this.paletteCount.TabIndex = 4;
@@ -614,16 +619,30 @@
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(104, 210);
+            this.progressBar.Location = new System.Drawing.Point(103, 209);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(74, 13);
             this.progressBar.TabIndex = 11;
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dataGridView1.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Location = new System.Drawing.Point(278, 12);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.Size = new System.Drawing.Size(917, 597);
+            this.dataGridView1.TabIndex = 12;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(279, 294);
+            this.ClientSize = new System.Drawing.Size(1207, 621);
+            this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.HeightLabel);
             this.Controls.Add(this.numericUpDown1);
@@ -636,12 +655,13 @@
             this.Controls.Add(this.ImageTitleText);
             this.Controls.Add(this.UserImageBox);
             this.Controls.Add(this.LoadImageButon);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "Form1";
             this.Text = "DMC Converter";
             ((System.ComponentModel.ISupportInitialize)(this.UserImageBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.WidthValue)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -662,6 +682,7 @@
         private System.Windows.Forms.NumericUpDown numericUpDown1;
         private System.Windows.Forms.Label HeightLabel;
         public System.Windows.Forms.ProgressBar progressBar;
+        private System.Windows.Forms.DataGridView dataGridView1;
     }
 }
 
