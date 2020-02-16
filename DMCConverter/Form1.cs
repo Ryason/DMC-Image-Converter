@@ -18,11 +18,14 @@ namespace DMCConverter
         public Image toConvert;
         public Image resized;
         public List<String> selectedDMCValues;
+        public DataGridView DMCDataGrid;
+        
         
         public Form1()
         {
             InitializeComponent();
             paletteCount.Text = "Palette Count\n0 / " + dmcPaletteBox.Items.Count.ToString();
+            DMCDataGrid = dataGridView1;
         }
         
         /// <summary>
@@ -62,11 +65,20 @@ namespace DMCConverter
             WidthValue.Value = 100;
             #endregion
         }
-
+        /// <summary>
+        /// called when user selects or deselects a dmc value from the selection box
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void dmcPaletteBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            //gets how many DMC values the user has selected
             tickedCount = dmcPaletteBox.CheckedItems.Count;
+
+            //displays how many DMC values the user has selected
             paletteCount.Text = "Palette Count\n" + tickedCount.ToString() + " / " + dmcPaletteBox.Items.Count.ToString();
+
+            //stores selected values as a list, later used in converting the iamge to DMC
             selectedDMCValues = new List<String>(dmcPaletteBox.CheckedItems.Cast<String>());
         }
 
@@ -78,8 +90,14 @@ namespace DMCConverter
         /// <param name="e"></param>
         public void ConvertButton_Click(object sender, EventArgs e)
         {
-            
-            ConvertImg.processImage(resized, selectedDMCValues, progressBar);
+            //if user converts a second image, we have to clear the data from the first conversion
+            if (DMCDataGrid.RowCount > 0 )
+            {
+                DMCDataGrid.Rows.Clear();
+            }
+
+            //call the process image method the convert our image to DMC values and display the values on a grid
+            ConvertImg.processImage(resized, selectedDMCValues, progressBar, DMCDataGrid);
         }
 
         public void WidthValue_ValueChanged(object sender, EventArgs e)
