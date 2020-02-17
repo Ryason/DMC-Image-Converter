@@ -14,6 +14,7 @@ namespace DMCConverter
 {
     public partial class Form1 : Form
     {
+        public bool imageLoaded = false;
         public int maxSize = 100;
         public int tickedCount = 0;
         public Image toConvert;
@@ -23,6 +24,7 @@ namespace DMCConverter
 
         public string[,] dmcDataStore;
         public Color[,] rgbArray;
+        private Image image;
 
         public Form1()
         {
@@ -59,7 +61,17 @@ namespace DMCConverter
             string targetFile = Path.ChangeExtension(sourceFile, "png");
 
             //load image png and assign it to an Image variable
-            Image image = Image.FromFile(sourceFile);
+
+            //this is here to catch the event a user opens the load dialogue and presses the cancel button, without loading an image.
+            try
+            {
+                image = Image.FromFile(sourceFile);
+            }
+            catch (Exception)
+            {
+
+                return;
+            }
             Console.WriteLine("loading " + openFileDialog1.FileName.ToString());
 
             //load image to image display box
@@ -81,6 +93,7 @@ namespace DMCConverter
         /// <param name="e"></param>
         public void dmcPaletteBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            
             //gets how many DMC values the user has selected
             tickedCount = dmcPaletteBox.CheckedItems.Count;
 
@@ -99,6 +112,17 @@ namespace DMCConverter
         /// <param name="e"></param>
         public void ConvertButton_Click(object sender, EventArgs e)
         {
+            //checking ticked count makes sure we dont try and run the conversion without a palette
+            if (tickedCount == 0)
+            {
+                return;
+            }
+            //checking if image is null makes sure we dont run the conversion without an image present
+            if (UserImageBox.Image == null)
+            {
+                return;
+            }
+
             //if user converts a second image, we have to clear the data from the first conversion
             if (DMCDataGrid.RowCount > 0 )
             {
@@ -133,6 +157,11 @@ namespace DMCConverter
 
         public void WidthValue_ValueChanged(object sender, EventArgs e)
         {
+            if (UserImageBox.Image == null)
+            {
+                return;
+            }
+
             resized = ConvertImg.resizeImage(toConvert, 
                                              toConvert.Width, 
                                              toConvert.Height, 
