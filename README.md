@@ -1,23 +1,18 @@
-### TO DO
-- Process the users image
-  - Store these matches so they can be recalled/displayed on a grid, that the user can use when stitching
-    - Grid is here, but save and load of matched image is not.
-  
-- User interface
-  - Change CheckListBox to a DatagGidView to be able to diplay rgb colours next to their values when selecting them
-  
-- Allow exporting the matched DMC grid to pdf form for printing
+### Current Features
+- Load an image and have it converted into a pattern for cross stitching with DMC floss
+- Resize a loaded image to a set width.
+- Create a palette of DMC floss colours, that will be used in converting a loaded image.
+- Display grid showing DMC values, representing the converted pixels of the loaded image.
+- Double click a grid cell to mark it as stitched.
+- Double click a marked cell to unmark it, if if was marked by mistake.
 
-- Add options for different stich manufactures, e.g Anchor
-
-### Done
-- Create windows form application to hold everything in
-  - Set the windows form size options, not allowing for resizing.
-    - This is once again resizable, to allow for a display grid 
-- Added a check-list containg all DMC values, along with a palette count display to show how many DMC values are selected
-- Added a load image button, that loads a preview of the users image to an image box
-- Added a convert button that will start the process of converting the users image
-- When the image is processed, display the matched DMC values in a grid that the user can pan around.
-- Allow the user to resize their image, and display how many stitches (pixels) the image will require
-- Analyse each pixel of the image, and determine the closet colour match of the selected DMC values
-- Make each stich in the grid selectable, allowing to highlight completed stitches (single click to highlight, double to remove highlight.
+### Features I Would Like To Add
+- Save and load previous conversions. As well as saving and loading of marked grid cells, to keep a users stitching progress.
+- Bigger floss selection. Such as brands of floss other than DMC.
+- Ability to see what the floss colours look like next to the selection panel.
+- Track how long a user has been stitching a pattern, and estimate a completion date.
+- Display what coloured floss is actually in the converted image, as the entire palette may not be used. Just because a colour has been selected, certain colours may never be matched to pixels in the users image.
+- Track each colour floss and the amount required. With a display showing how many stitches of that colour are left to stitch in the image.
+- Ability to save a converted iamage pattern to pdf in order to print it out.
+- Update button that links to this project's repo, so users can get the latest version. (Could store version number in code and check against current release version number. Then alert if users exe is not the latest)
+- Go public...
