@@ -1,5 +1,21 @@
 ### Latest Release [Version 0.01 (.exe)](https://github.com/Ryan-02/DMC-Image-Converter/releases/download/v0.01/DMCConverter.exe)
 ---
+### About
+DMC Image Converter is a tool used to create cross stitch patterns from images.
+
+### How To Use
+> Load an image into the application by clicking the Load Image button.
+
+> Controll the size of your cross stich pattern by setting the width, with the width controll box.
+
+> Select from the list of DMC values, which floss' you would like to use with your pattern.
+
+> Pressing the convert button will start the image conversion, and will result in the pattern being displayed on a large grid.
+
+> You can any grid cell to make the cell white, temporarily, if the DMC value in the cell is hard to read.
+
+> Once you have completed a stitch, double click on the cell to mark it red.
+
 ### Current Features
 - Load an image and have it converted into a pattern for cross stitching with DMC floss
 - Resize a loaded image to a set width.
@@ -18,4 +34,3 @@
 - Ability to save a converted iamage pattern to pdf in order to print it out.
 - Update button that links to this project's repo, so users can get the latest version. (Could store version number in code and check against current release version number. Then alert if users exe is not the latest)
 - Go public...
----
