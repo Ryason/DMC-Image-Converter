@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Reflection;
 
 namespace DMCConverter
 {
@@ -19,13 +20,21 @@ namespace DMCConverter
         public Image resized;
         public List<String> selectedDMCValues;
         public DataGridView DMCDataGrid;
-        
-        
+
+        public string[,] dmcDataStore;
+        public Color[,] rgbArray;
+
         public Form1()
         {
             InitializeComponent();
             paletteCount.Text = "Palette Count\n0 / " + dmcPaletteBox.Items.Count.ToString();
             DMCDataGrid = dataGridView1;
+
+            //my attepmt at enabling doublebuffering, to speed up the datagridview scrolling/rendering slowness.
+            //mostly coppied code form stack overflow and an article on 10tec.com that explains the issue and gives some workaround code.
+            EnableDoubleBuffering();
+
+            
         }
         
         /// <summary>
@@ -95,9 +104,34 @@ namespace DMCConverter
             {
                 DMCDataGrid.Rows.Clear();
             }
-
+            
             //call the process image method the convert our image to DMC values and display the values on a grid
-            ConvertImg.processImage(resized, selectedDMCValues, progressBar, DMCDataGrid);
+            //store the returned dmc pixel array to recall them if user accidentally double clicks to remove.
+            dmcDataStore = ConvertImg.processImage(resized, selectedDMCValues, progressBar, DMCDataGrid).Item1;
+            rgbArray = ConvertImg.processImage(resized, selectedDMCValues, progressBar, DMCDataGrid).Item2;
+
+
+
+
+        }
+
+        public void EnableDoubleBuffering()
+        {
+            // Set the value of the double-buffering style bits to true.
+            this.SetStyle(ControlStyles.DoubleBuffer |
+                          ControlStyles.UserPaint |
+                          ControlStyles.AllPaintingInWmPaint,
+                          true);
+            this.UpdateStyles();
+
+            //from the explanations at https://10tec.com/articles/why-datagridview-slow.aspx
+            if (!SystemInformation.TerminalServerSession)
+            {
+                Type dgvType = dataGridView1.GetType();
+                PropertyInfo pi = dgvType.GetProperty("DoubleBuffered",
+                  BindingFlags.Instance | BindingFlags.NonPublic);
+                pi.SetValue(dataGridView1, true, null);
+            }
         }
 
         public void WidthValue_ValueChanged(object sender, EventArgs e)
@@ -107,6 +141,24 @@ namespace DMCConverter
                                              toConvert.Height, 
                                              Convert.ToInt32(Math.Round(WidthValue.Value,0)));
             UserImageBox.Image = resized;
+        }
+
+        public void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+            if ((string)dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value == "")
+            {
+                dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = dmcDataStore[e.RowIndex, e.ColumnIndex];
+                dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = rgbArray[e.RowIndex, e.ColumnIndex];
+            }
+            else
+            {
+                DataGridViewCellStyle cellStyle = new DataGridViewCellStyle();
+                cellStyle.BackColor = Color.Red;
+
+                dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Style = cellStyle;
+                dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = "";
+            }
         }
     }
 }

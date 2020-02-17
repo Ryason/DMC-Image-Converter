@@ -28,6 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.LoadImageButon = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.UserImageBox = new System.Windows.Forms.PictureBox();
@@ -70,7 +73,7 @@
             this.UserImageBox.MinimumSize = new System.Drawing.Size(120, 120);
             this.UserImageBox.Name = "UserImageBox";
             this.UserImageBox.Size = new System.Drawing.Size(120, 120);
-            this.UserImageBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.UserImageBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.UserImageBox.TabIndex = 1;
             this.UserImageBox.TabStop = false;
             // 
@@ -89,8 +92,10 @@
             // 
             this.dmcPaletteBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.dmcPaletteBox.BackColor = System.Drawing.Color.White;
             this.dmcPaletteBox.CheckOnClick = true;
             this.dmcPaletteBox.FormattingEnabled = true;
+            this.dmcPaletteBox.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.dmcPaletteBox.Items.AddRange(new object[] {
             "150\t\t171\t2\t73",
             "151\t\t240\t206\t212",
@@ -548,7 +553,7 @@
             "White\t\t252\t251\t248"});
             this.dmcPaletteBox.Location = new System.Drawing.Point(12, 25);
             this.dmcPaletteBox.Name = "dmcPaletteBox";
-            this.dmcPaletteBox.Size = new System.Drawing.Size(85, 589);
+            this.dmcPaletteBox.Size = new System.Drawing.Size(82, 589);
             this.dmcPaletteBox.TabIndex = 3;
             this.dmcPaletteBox.SelectedIndexChanged += new System.EventHandler(this.dmcPaletteBox_SelectedIndexChanged);
             // 
@@ -556,7 +561,7 @@
             // 
             this.paletteCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.paletteCount.AutoSize = true;
-            this.paletteCount.Location = new System.Drawing.Point(100, 583);
+            this.paletteCount.Location = new System.Drawing.Point(100, 588);
             this.paletteCount.Name = "paletteCount";
             this.paletteCount.Size = new System.Drawing.Size(71, 26);
             this.paletteCount.TabIndex = 4;
@@ -630,12 +635,34 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-            this.dataGridView1.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.Transparent;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.Red;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
+            this.dataGridView1.GridColor = System.Drawing.SystemColors.ButtonFace;
             this.dataGridView1.Location = new System.Drawing.Point(278, 12);
             this.dataGridView1.Name = "dataGridView1";
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.MenuText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.MenuText;
+            this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridView1.Size = new System.Drawing.Size(917, 597);
             this.dataGridView1.TabIndex = 12;
+            this.dataGridView1.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellDoubleClick);
             // 
             // Form1
             // 
@@ -655,6 +682,7 @@
             this.Controls.Add(this.ImageTitleText);
             this.Controls.Add(this.UserImageBox);
             this.Controls.Add(this.LoadImageButon);
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "Form1";
             this.Text = "DMC Converter";
