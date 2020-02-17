@@ -1,3 +1,5 @@
+### Latest Release [Version 0.01 (.exe)](https://github.com/Ryan-02/DMC-Image-Converter/releases/download/v0.01/DMCConverter.exe)
+---
 ### Current Features
 - Load an image and have it converted into a pattern for cross stitching with DMC floss
 - Resize a loaded image to a set width.
@@ -5,7 +7,7 @@
 - Display grid showing DMC values, representing the converted pixels of the loaded image.
 - Double click a grid cell to mark it as stitched.
 - Double click a marked cell to unmark it, if if was marked by mistake.
-
+---
 ### Features I Would Like To Add
 - Save and load previous conversions. As well as saving and loading of marked grid cells, to keep a users stitching progress.
 - Bigger floss selection. Such as brands of floss other than DMC.
@@ -16,3 +18,4 @@
 - Ability to save a converted iamage pattern to pdf in order to print it out.
 - Update button that links to this project's repo, so users can get the latest version. (Could store version number in code and check against current release version number. Then alert if users exe is not the latest)
 - Go public...
+---
