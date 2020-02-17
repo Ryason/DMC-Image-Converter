@@ -106,13 +106,10 @@ namespace DMCConverter
             }
             
             //call the process image method the convert our image to DMC values and display the values on a grid
-            //store the returned dmc pixel array to recall them if user accidentally double clicks to remove.
-            dmcDataStore = ConvertImg.processImage(resized, selectedDMCValues, progressBar, DMCDataGrid).Item1;
-            rgbArray = ConvertImg.processImage(resized, selectedDMCValues, progressBar, DMCDataGrid).Item2;
-
-
-
-
+            //store the returned dmc pixel array and rgbArray to recall them if user accidentally double clicks to mark a grid cell
+            Tuple<string[,],Color[,]> tupleReturn = ConvertImg.processImage(resized, selectedDMCValues, progressBar, DMCDataGrid);
+            dmcDataStore = tupleReturn.Item1;
+            rgbArray = tupleReturn.Item2;
         }
 
         public void EnableDoubleBuffering()
