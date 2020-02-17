@@ -6,19 +6,23 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data;
+using System.Reflection;
 
 namespace DMCConverter
 {
     public class ConvertImg
     {
+
+        
+
+        
         /// <summary>
         /// This is called when the convert button is presses
         /// And is the main method for matching each pixel to a DMC colour
         /// </summary>
         /// <param name="img">The image the user wants to convert to DMC</param>
         /// <param name="vals"> List of selected DMC values </param>
-
-        public static void processImage(Image img, List<String> vals, ProgressBar progressBar, DataGridView DMCDataGrid)
+        public static Tuple<string[,],Color[,]> processImage(Image img, List<String> vals, ProgressBar progressBar, DataGridView DMCDataGrid)
         {
             //image that we are processing
             Image image = img;
@@ -52,6 +56,9 @@ namespace DMCConverter
 
             //creata a w by h sized array to hold the DMC data (string) for each pixel.
             string[,] dmcPixelDataArray = new string[h, w];
+
+            Color[,] rgbArray = new Color[h, w];
+            
 
             //loop over all pixels and compare every dmc rgb value to the pixel's rgb value.
             //calculate the closest matching dmc value, and store it in an array.
@@ -93,6 +100,8 @@ namespace DMCConverter
                     count += 1;
                     progressBar.Value = Convert.ToInt32(Math.Round((count / total)*100f));
 
+                    
+
                     //again, this float ensures the first comparison will always be stored as the closest matching dmc value
                     distance = 999999999999999;
                 } 
@@ -116,11 +125,20 @@ namespace DMCConverter
                 {
                     //populate the row with dmc pixel value data
                     row.Cells[j].Value = dmcPixelDataArray[i, j];
+                    row.Cells[j].Style.BackColor = convertedIMG.GetPixel(j, i);
+                    rgbArray[i, j] = convertedIMG.GetPixel(j, i);
+
+
                 }
 
                 //add populated row to the datagridview
                 DMCDataGrid.Rows.Add(row);
-            }  
+
+                
+            }
+
+            //God bless this son of a bitch tuple return!!!!!
+            return new Tuple<string[,],Color[,]>(dmcPixelDataArray,rgbArray);
         }
 
         /// <summary>
