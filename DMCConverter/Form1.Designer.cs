@@ -591,6 +591,11 @@
             // WidthValue
             // 
             this.WidthValue.Location = new System.Drawing.Point(229, 39);
+            this.WidthValue.Maximum = new decimal(new int[] {
+            200,
+            0,
+            0,
+            0});
             this.WidthValue.Name = "WidthValue";
             this.WidthValue.Size = new System.Drawing.Size(43, 20);
             this.WidthValue.TabIndex = 7;

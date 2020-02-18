@@ -98,7 +98,7 @@ namespace DMCConverter
 
                     //increase the value of the progress bar
                     count += 1;
-                    progressBar.Value = Convert.ToInt32(Math.Round((count / total)*100f));
+                    progressBar.Value = Convert.ToInt32(Math.Round(((float)count / (float)total)*100f));
 
                     
 
