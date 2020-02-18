@@ -49,7 +49,7 @@ namespace DMCConverter
             #region Load Image
             //sets current progress bar to 0
             progressBar.Value = 0;
-
+            
             //only allows user to pick and load image files
             openFileDialog1.Filter = "Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png) | *.jpg; *.jpeg; *.jpe; *.jfif; *.png";
 
