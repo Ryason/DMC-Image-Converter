@@ -7,22 +7,20 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data;
 using System.Reflection;
+using ColorMine.ColorSpaces;
+using ColorMine.ColorSpaces.Comparisons;
 
 namespace DMCConverter
 {
     public class ConvertImg
     {
-
-        
-
-        
         /// <summary>
         /// This is called when the convert button is presses
         /// And is the main method for matching each pixel to a DMC colour
         /// </summary>
         /// <param name="img">The image the user wants to convert to DMC</param>
         /// <param name="vals"> List of selected DMC values </param>
-        public static Tuple<string[,],Color[,]> processImage(Image img, List<String> vals, ProgressBar progressBar, DataGridView DMCDataGrid)
+        public static Tuple<string[,],Color[,]> processImage(Image img, List<String> vals, ProgressBar progressBar, DataGridView DMCDataGrid, int AlgorithmType)
         {
             //image that we are processing
             Image image = img;
@@ -49,7 +47,7 @@ namespace DMCConverter
             int total = w * h;
 
             //this float always ensures that the first DMC value check will be stored as the closest match
-            float distance = 999999999;
+            double distance = 999999999d;
 
             //creates the closest dmc value string
             string closestDMC = "";
@@ -68,26 +66,62 @@ namespace DMCConverter
                 {
                     foreach (var item in DMCValues)
                     {
-                        //current in-lop DMC rgb values
+                        //Use colorMine library to convert RGB to CIELAB colour space
+                        //And finding the closest matching colour with the shortest CIELAB ΔE
+                        //https://en.wikipedia.org/wiki/Color_difference
+                        //https://github.com/muak/ColorMine
+                        //Also using the colorMine's comparison algorithm
+
+                        //current in-loop DMC rgb values
                         int rVal = Convert.ToInt32(item.Split('	')[2]);
                         int gVal = Convert.ToInt32(item.Split('	')[3]);
                         int bVal = Convert.ToInt32(item.Split('	')[4]);
+                        
+                        Color DMCcolour = Color.FromArgb(rVal, gVal, bVal);
                         
                         //current in-loop pixel rgb value
                         int rImg = convert.GetPixel(i, j).R;
                         int gImg = convert.GetPixel(i, j).G;
                         int bImg = convert.GetPixel(i, j).B;
 
+                        //set up new rgb values for use in the colormine deltaE calculation
+                        Rgb DMC = new Rgb { R = rVal, G = gVal, B = bVal };
+                        Rgb IMG = new Rgb { R = rImg, G = gImg, B = bImg };
+
+                        //create double for deltaE result
+                        double deltaE = 0d;
+
+                        //set up a switch statement for switching between selected matching algorithm
+                        // 0 CIE76
+                        // 1 CIE94
+                        // 2 CMC l: C
+                        // 3 CIE2000
+                        switch (AlgorithmType)
+                        {
+                            case 0:
+                                deltaE = DMC.Compare(IMG, new Cie1976Comparison());
+                                break;
+                            case 1:
+                                deltaE = DMC.Compare(IMG, new Cie94Comparison());
+                                break;
+                            case 2:
+                                deltaE = DMC.Compare(IMG, new CmcComparison());
+                                break;
+                            case 3:
+                                deltaE = DMC.Compare(IMG, new CieDe2000Comparison());
+                                break;
+                        }
+
                         //use pythagoras to get 'distance' value for the two rgb values
-                        float match = (float)Math.Sqrt(((rVal - rImg) * (rVal - rImg)) +
-                                                       ((gVal - gImg) * (gVal - gImg)) +
-                                                       ((bVal - bImg) * (bVal - bImg)));
+                        //float match = (float)Math.Sqrt(((rVal - rImg) * (rVal - rImg)) +
+                        //                               ((gVal - gImg) * (gVal - gImg)) +
+                        //                               ((bVal - bImg) * (bVal - bImg)));
                         
                         //check if current value is close in colour than the previous 
-                        if (match < distance)
+                        if (deltaE < distance)
                         {
                             //if the new match is closer, set it as the new distance benchmark
-                            distance = match;
+                            distance = deltaE;
 
                             //set the corresponding dmc value as the new closest match for the current pixel
                             closestDMC = item.Split('	')[0];
@@ -99,8 +133,6 @@ namespace DMCConverter
                     //increase the value of the progress bar
                     count += 1;
                     progressBar.Value = Convert.ToInt32(Math.Round(((float)count / (float)total)*100f));
-
-                    
 
                     //again, this float ensures the first comparison will always be stored as the closest matching dmc value
                     distance = 999999999999999;
