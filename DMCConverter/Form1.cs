@@ -36,7 +36,8 @@ namespace DMCConverter
             //mostly coppied code form stack overflow and an article on 10tec.com that explains the issue and gives some workaround code.
             EnableDoubleBuffering();
 
-            
+            //sets starting algorithm type to CIE94
+            AlgorithmType.SelectedIndex = 1;
         }
         
         /// <summary>
@@ -93,7 +94,6 @@ namespace DMCConverter
         /// <param name="e"></param>
         public void dmcPaletteBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            
             //gets how many DMC values the user has selected
             tickedCount = dmcPaletteBox.CheckedItems.Count;
 
@@ -131,7 +131,7 @@ namespace DMCConverter
             
             //call the process image method the convert our image to DMC values and display the values on a grid
             //store the returned dmc pixel array and rgbArray to recall them if user accidentally double clicks to mark a grid cell
-            Tuple<string[,],Color[,]> tupleReturn = ConvertImg.processImage(resized, selectedDMCValues, progressBar, DMCDataGrid);
+            Tuple<string[,],Color[,]> tupleReturn = ConvertImg.processImage(resized, selectedDMCValues, progressBar, DMCDataGrid, AlgorithmType.SelectedIndex);
             dmcDataStore = tupleReturn.Item1;
             rgbArray = tupleReturn.Item2;
         }
