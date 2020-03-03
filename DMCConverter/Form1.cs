@@ -15,16 +15,23 @@ namespace DMCConverter
     public partial class Form1 : Form
     {
         public bool imageLoaded = false;
+
         public int maxSize = 100;
         public int tickedCount = 0;
+
+        public Image image;
         public Image toConvert;
         public Image resized;
+
+        public Color[,] rgbArray;
+
         public List<String> selectedDMCValues;
+
         public DataGridView DMCDataGrid;
 
         public string[,] dmcDataStore;
-        public Color[,] rgbArray;
-        private Image image;
+
+
 
         public Form1()
         {
@@ -70,10 +77,8 @@ namespace DMCConverter
             }
             catch (Exception)
             {
-
                 return;
             }
-            Console.WriteLine("loading " + openFileDialog1.FileName.ToString());
 
             //load image to image display box
             UserImageBox.Image = image;
@@ -155,33 +160,54 @@ namespace DMCConverter
             }
         }
 
+        /// <summary>
+        /// Converts the users image to the size they specify
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void WidthValue_ValueChanged(object sender, EventArgs e)
         {
+            //if no image is present, don't try to resize
             if (UserImageBox.Image == null)
             {
                 return;
             }
 
+            //if image is present, resize it to specified width.
             resized = ConvertImg.resizeImage(toConvert, 
                                              toConvert.Width, 
                                              toConvert.Height, 
                                              Convert.ToInt32(Math.Round(WidthValue.Value,0)));
+
+            //store resized image, ready to be colour matched and converted to DMC olny colours
             UserImageBox.Image = resized;
         }
 
+        /// <summary>
+        /// Makes a cell on the grid red when the user double clicks. 
+        /// If marked by mistake the user can double click the cell again.
+        /// This reverts the cell's background from red to the previous colour and restores the DMC value text to the cell
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-
+            //if the cell is empty, i.e. if the user has double clicked and marked it red
             if ((string)dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value == "")
             {
+                //set the text value of the cell to be that of the DMC colour name for this cell's colour.
                 dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = dmcDataStore[e.RowIndex, e.ColumnIndex];
+
+                //set the background of the cell to the corresponding rgb colour for this cell's DMC value
                 dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = rgbArray[e.RowIndex, e.ColumnIndex];
             }
             else
             {
+                //else, if the cell is not red, make the background of the cell red
                 DataGridViewCellStyle cellStyle = new DataGridViewCellStyle();
                 cellStyle.BackColor = Color.Red;
 
+                //and remove the DMC value text
                 dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Style = cellStyle;
                 dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = "";
             }
