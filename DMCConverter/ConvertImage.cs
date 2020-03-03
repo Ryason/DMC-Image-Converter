@@ -165,11 +165,12 @@ namespace DMCConverter
 
                 //add populated row to the datagridview
                 DMCDataGrid.Rows.Add(row);
-
-                
             }
 
             //God bless this son of a bitch tuple return!!!!!
+            //allows to return both image data and converted image data to the form class
+            //useful when user makes a mistake and marks the wrong grid cell
+            //unmarked coour is now available to switch it from marked red to the correct colour.
             return new Tuple<string[,],Color[,]>(dmcPixelDataArray,rgbArray);
         }
 
