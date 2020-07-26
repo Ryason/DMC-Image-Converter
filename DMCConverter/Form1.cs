@@ -18,6 +18,7 @@ namespace DMCConverter
 
         public int maxSize = 100;
         public int tickedCount = 0;
+        public int threadAmount = 0;
 
         public Image image;
         public Image toConvert;
@@ -25,6 +26,7 @@ namespace DMCConverter
 
         public Color[,] rgbArray;
 
+        public List<String> allDMCValues;
         public List<String> selectedDMCValues;
 
         public DataGridView DMCDataGrid;
@@ -43,8 +45,11 @@ namespace DMCConverter
             //mostly coppied code form stack overflow and an article on 10tec.com that explains the issue and gives some workaround code.
             EnableDoubleBuffering();
 
-            //sets starting algorithm type to CIE94
-            AlgorithmType.SelectedIndex = 1;
+            //sets starting algorithm type to CIE2000
+            AlgorithmType.SelectedIndex = 3;
+
+            //sets all DMC values as a variable
+            allDMCValues = new List<String>(dmcPaletteBox.Items.Cast<String>());
         }
         
         /// <summary>
@@ -117,8 +122,8 @@ namespace DMCConverter
         /// <param name="e"></param>
         public void ConvertButton_Click(object sender, EventArgs e)
         {
-            //checking ticked count makes sure we dont try and run the conversion without a palette
-            if (tickedCount == 0)
+            //checking ticked count, and wether the user wants to auto match threads, makes sure we don't try and run the conversion without any DMC values to match against
+            if (tickedCount == 0 && threadAmount == 0)
             {
                 return;
             }
@@ -133,12 +138,22 @@ namespace DMCConverter
             {
                 DMCDataGrid.Rows.Clear();
             }
+
+            if (tickedCount == 0 && threadAmount > 0)
+            {
+                selectedDMCValues = new List<string>();
+            }
+
             
             //call the process image method the convert our image to DMC values and display the values on a grid
             //store the returned dmc pixel array and rgbArray to recall them if user accidentally double clicks to mark a grid cell
-            Tuple<string[,],Color[,]> tupleReturn = ConvertImg.processImage(resized, selectedDMCValues, progressBar, DMCDataGrid, AlgorithmType.SelectedIndex);
+            Tuple<string[,],Color[,]> tupleReturn = ConvertImg.processImage(threadAmount, resized, selectedDMCValues, progressBar, DMCDataGrid, AlgorithmType.SelectedIndex, allDMCValues, dmcPaletteBox);
             dmcDataStore = tupleReturn.Item1;
             rgbArray = tupleReturn.Item2;
+
+            //update palette counter, just in case user generated threads and didnt pick any
+            tickedCount = dmcPaletteBox.CheckedItems.Count;
+            paletteCount.Text = "Palette Count\n" + tickedCount.ToString() + " / " + dmcPaletteBox.Items.Count.ToString();
         }
 
         public void EnableDoubleBuffering()
@@ -181,6 +196,7 @@ namespace DMCConverter
 
             //store resized image, ready to be colour matched and converted to DMC olny colours
             UserImageBox.Image = resized;
+            numericUpDown1.Value = resized.Height;
         }
 
         /// <summary>
@@ -211,6 +227,17 @@ namespace DMCConverter
                 dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Style = cellStyle;
                 dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = "";
             }
+        }
+
+        /// <summary>
+        /// stores the value of threadAmount
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void numericUpDown2_ValueChanged(object sender, EventArgs e)
+        {
+            threadAmount = (int)numericUpDown2.Value;
+            System.Diagnostics.Debug.WriteLine(threadAmount);
         }
     }
 }
