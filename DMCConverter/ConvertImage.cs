@@ -20,12 +20,13 @@ namespace DMCConverter
         /// </summary>
         /// <param name="img">The image the user wants to convert to DMC</param>
         /// <param name="vals"> List of selected DMC values </param>
-        public static Tuple<string[,],Color[,]> processImage(Image img, List<String> vals, ProgressBar progressBar, DataGridView DMCDataGrid, int AlgorithmType)
+        public static Tuple<string[,],Color[,]> processImage(int threadAmount, Image img, List<String> vals, ProgressBar progressBar, DataGridView DMCDataGrid, int AlgorithmType, List<String> allDMCValues, CheckedListBox checkBox)
         {
+            //dictionary for storing pixel values, to determine most frequesnt colours.
+            Dictionary<Color, int> BestMatchedColours = new Dictionary<Color, int>();
+
             //image that we are processing
             Image image = img;
-
-            List<String> DMCValues = vals;
 
             //creates a bitmap of the image we're converting
             Bitmap convert = new Bitmap(image);
@@ -46,7 +47,7 @@ namespace DMCConverter
             //also to track progress of completed matches, and used in displaying total number of stiches
             int total = w * h;
 
-            //this float always ensures that the first DMC value check will be stored as the closest match
+            //this double always ensures that the first DMC value check will be stored as the closest match
             double distance = 999999999d;
 
             //creates the closest dmc value string
@@ -54,9 +55,98 @@ namespace DMCConverter
 
             //creata a w by h sized array to hold the DMC data (string) for each pixel.
             string[,] dmcPixelDataArray = new string[h, w];
-
             Color[,] rgbArray = new Color[h, w];
-            
+
+            //initialize DMCValues list
+            List<String> DMCValues = new List<string>();
+
+            //if selecting our own threads and not auto generating, store selected threads
+            if (vals.Count > 0)
+            {
+                DMCValues = vals;
+            }
+            else
+            {
+                DMCValues = allDMCValues;
+            }
+
+            Dictionary<String, int> colourCount = new Dictionary<String, int>();
+
+            //list for all DMC's used
+            List<string> allUsedDMC = new List<string>();
+
+            int counter = 0;
+            //check if wanting to auto generate best threads to use in the image conversion
+            if (threadAmount > 0)
+            {
+                counter = 0;
+                for (int i = 0; i < checkBox.Items.Count; i++)
+                {
+                    checkBox.SetItemCheckState(i, 0);
+                }
+                //loop over all pixels in the image that we want to convert
+                for (int i = 0; i < w; i++)
+                {
+                    for (int j = 0; j < h; j++)
+                    {
+                        Color currentPixel = convert.GetPixel(i, j);
+                        String currentDMC = FindClosestDMC(currentPixel, allDMCValues, AlgorithmType);
+
+                        //if current pixel DMC is stored in out colour tracking dictionary, increment its count value by 1
+                        if (colourCount.ContainsKey(currentDMC))
+                        {
+                            colourCount[currentDMC]++;
+                        }
+                        //else add it to the dictionary and give add one to its count value
+                        else
+                        {
+                            colourCount.Add(currentDMC, 1);
+
+                        }
+                    }
+                }
+
+                //sort the dictionary by value so most used colours are at the start of the dictionary
+                colourCount =  colourCount.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+
+                List <String> commonColours = new List<String>();
+                counter = 0;
+                foreach (var item in colourCount.OrderByDescending(x => x.Value))
+                {
+                    if (counter > threadAmount)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        commonColours.Add(item.Key);
+                        counter++;
+                    }
+                }
+
+                List<string> mostCommonDMC = new List<string>();
+
+                //find closest matching DMC value for each of the most common colours
+                foreach(var item in commonColours)
+                {
+                    mostCommonDMC.Add(item);
+                    counter = 0;
+
+                    //for each of the common dmc values, check their checkbox in the selection panel, 
+                    //so user knows which ones have been suggested
+                    for (int i = 0; i < checkBox.Items.Count; i++)
+                    {
+                        if (item.Split(' ')[0].ToString() == checkBox.Items[i].ToString())
+                        {
+                            checkBox.SetItemChecked(i, true);
+                        }
+                    }
+                    
+                }
+
+                //set the dmc values to be used in the image conversion
+                DMCValues = mostCommonDMC;
+            }
 
             //loop over all pixels and compare every dmc rgb value to the pixel's rgb value.
             //calculate the closest matching dmc value, and store it in an array.
@@ -64,6 +154,7 @@ namespace DMCConverter
             {
                 for (int j = 0; j < h; j++)
                 {
+                    
                     foreach (var item in DMCValues)
                     {
                         //Use colorMine library to convert RGB to CIELAB colour space
@@ -159,8 +250,6 @@ namespace DMCConverter
                     row.Cells[j].Value = dmcPixelDataArray[i, j];
                     row.Cells[j].Style.BackColor = convertedIMG.GetPixel(j, i);
                     rgbArray[i, j] = convertedIMG.GetPixel(j, i);
-
-
                 }
 
                 //add populated row to the datagridview
@@ -173,6 +262,68 @@ namespace DMCConverter
             //unmarked coour is now available to switch it from marked red to the correct colour.
             return new Tuple<string[,],Color[,]>(dmcPixelDataArray,rgbArray);
         }
+
+        public static string FindClosestDMC(Color RGBToDMC, List<string> DMCValues, int AlgorithmType)
+        {
+            
+            double distance = 99999999999d;
+
+            string closestDMC = ""; 
+
+            foreach (var item in DMCValues)
+            {
+                //current in-loop DMC rgb values
+                int rDMC = Convert.ToInt32(item.Split('	')[2]);
+                int gDMC = Convert.ToInt32(item.Split('	')[3]);
+                int bDMC = Convert.ToInt32(item.Split('	')[4]);
+
+                int r = RGBToDMC.R;
+                int g = RGBToDMC.G;
+                int b = RGBToDMC.B;
+
+                //set up new rgb values for use in the colormine deltaE calculation
+                Rgb DMC = new Rgb { R = rDMC, G = gDMC, B = bDMC };
+                Rgb rgb = new Rgb { R = r, G = g, B = b };
+
+
+                //create double for deltaE result
+                double deltaE = 0d;
+
+                //set up a switch statement for switching between selected matching algorithm
+                // 0 CIE76
+                // 1 CIE94
+                // 2 CMC l: C
+                // 3 CIE2000
+                switch (AlgorithmType)
+                {
+                    case 0:
+                        deltaE = DMC.Compare(rgb, new Cie1976Comparison());
+                        break;
+                    case 1:
+                        deltaE = DMC.Compare(rgb, new Cie94Comparison());
+                        break;               
+                    case 2:                  
+                        deltaE = DMC.Compare(rgb, new CmcComparison());
+                        break;
+                    case 3:
+                        deltaE = DMC.Compare(rgb, new CieDe2000Comparison());
+                        break;
+                }
+
+                //check if current value is close in colour than the previous 
+                if (deltaE < distance)
+                {
+                    //if the new match is closer, set it as the new distance benchmark
+                    distance = deltaE;
+
+                    //set the corresponding dmc value as the new closest match for the current pixel
+                    closestDMC = item;
+                }
+            }
+
+            return closestDMC;
+        }
+
 
         /// <summary>
         /// Resizes the images to users specified width
