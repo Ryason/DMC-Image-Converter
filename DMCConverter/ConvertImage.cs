@@ -113,7 +113,7 @@ namespace DMCConverter
                 counter = 0;
                 foreach (var item in colourCount.OrderByDescending(x => x.Value))
                 {
-                    if (counter > threadAmount)
+                    if (counter >= threadAmount)
                     {
                         break;
                     }
