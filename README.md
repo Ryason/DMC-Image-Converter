@@ -10,19 +10,21 @@ DMC Image Converter is a tool used to create cross stitch patterns from images.
 
 > Select from the list of DMC values, which floss' you would like to use with your pattern.
 
+> Or, select how many different threads you would like to used, and the program will find the best suitable DMC colours.
+
 > Pressing the convert button will start the image conversion, and will result in the pattern being displayed on a large grid.
 
-> You can any grid cell to make the cell white, temporarily, if the DMC value in the cell is hard to read.
+> You can click on any grid cell to make the cell white, temporarily, if the DMC value in the cell is hard to read.
 
 > Once you have completed a stitch, double click on the cell to mark it red.
 
 ### Current Features
-- Load an image and have it converted into a pattern for cross stitching with DMC floss
+- Load an image and have it converted into a pattern for cross stitching with DMC floss.
+- Automatic selection of best DMC threads to use, as well as user specified.
 - Resize a loaded image to a set width.
-- Create a palette of DMC floss colours, that will be used in converting a loaded image.
 - Display grid showing DMC values, representing the converted pixels of the loaded image.
 - Double click a grid cell to mark it as stitched.
-- Double click a marked cell to unmark it, if if was marked by mistake.
+- Double click a marked cell to unmark it, if it was marked by mistake.
 - Select between different colour matching algorithms. Each gives a slightly different result. With the closeest current algorithm being [CIE2000](https://en.wikipedia.org/wiki/Color_difference#CIELAB_%CE%94E*). Although the closest mathematically, you may want to play around with what the other versions produce.
 ---
 ### Features I Would Like To Add
