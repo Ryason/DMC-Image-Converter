@@ -15,6 +15,7 @@ namespace DMCConverter
     public partial class Form1 : Form
     {
         public bool imageLoaded = false;
+        public bool converted = false;
 
         public int maxSize = 100;
         public int tickedCount = 0;
@@ -33,6 +34,8 @@ namespace DMCConverter
 
         public string[,] dmcDataStore;
 
+        public Graphics g;
+
 
 
         public Form1()
@@ -50,6 +53,10 @@ namespace DMCConverter
 
             //sets all DMC values as a variable
             allDMCValues = new List<String>(dmcPaletteBox.Items.Cast<String>());
+
+            g = pictureBox1.CreateGraphics();
+
+            
         }
         
         /// <summary>
@@ -154,6 +161,51 @@ namespace DMCConverter
             //update palette counter, just in case user generated threads and didnt pick any
             tickedCount = dmcPaletteBox.CheckedItems.Count;
             paletteCount.Text = "Palette Count\n" + tickedCount.ToString() + " / " + dmcPaletteBox.Items.Count.ToString();
+
+            converted = true;
+
+            pictureBox1.Refresh();
+
+
+        }
+
+        private void drawImage()
+        {
+            Brush red = new SolidBrush(Color.FromArgb(20,20,20));
+            Pen redPen = new Pen(red, 1);
+
+            int Height = (int)numericUpDown1.Value;
+            int Width = (int)WidthValue.Value;
+
+
+            for (int i = 0; i < Width + 1; i++)
+            {
+                g.DrawLine(redPen, i * 5, 0, i * 5, Height * 5);
+            }
+            for (int i = 0; i < Height + 1; i++)
+            {
+                g.DrawLine(redPen, 0, i * 5, Width * 5, i * 5);
+            }
+
+            pictureBox1.Width = Width  * 5 +1;
+            pictureBox1.Height = Height * 5 +1;
+
+            if (converted)
+            {
+                for (int i = 0; i < numericUpDown1.Value; i++)
+                {
+                    for (int j = 0; j < WidthValue.Value; j++)
+                    {
+                        Brush DMCcolour = new SolidBrush(rgbArray[i, j]);
+
+                        g.FillRectangle(DMCcolour, j * 5 +1, i * 5 +1, 4, 4);
+                    }
+                }
+            }
+            
+
+
+
         }
 
         public void EnableDoubleBuffering()
@@ -182,6 +234,7 @@ namespace DMCConverter
         /// <param name="e"></param>
         public void WidthValue_ValueChanged(object sender, EventArgs e)
         {
+            converted = false;
             //if no image is present, don't try to resize
             if (UserImageBox.Image == null)
             {
@@ -197,6 +250,9 @@ namespace DMCConverter
             //store resized image, ready to be colour matched and converted to DMC olny colours
             UserImageBox.Image = resized;
             numericUpDown1.Value = resized.Height;
+
+            pictureBox1.Refresh();
+            
         }
 
         /// <summary>
@@ -239,5 +295,16 @@ namespace DMCConverter
             threadAmount = (int)numericUpDown2.Value;
             System.Diagnostics.Debug.WriteLine(threadAmount);
         }
+
+        private void pictureBox1_Paint(object sender, PaintEventArgs e)
+        {
+            g = e.Graphics;
+            drawImage();
+        }
+
+
+
+
+
     }
 }

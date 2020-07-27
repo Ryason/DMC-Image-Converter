@@ -341,7 +341,7 @@ namespace DMCConverter
             //calculate aspect ratio and calculate new height from users given width
             float aspectRatio = (float)w / (float)h;
             int resizedHeight = (int)(resizedWidth / aspectRatio);
-;
+
             //simple way of resizing the image
             //need to look into image resizing methods that include Anti aliasing and other resizing techniques, plus maybe look into upscaling too.
             Image resized = new Bitmap(imageToResize, new Size(resizedWidth, resizedHeight));
