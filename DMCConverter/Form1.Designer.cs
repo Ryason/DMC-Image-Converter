@@ -52,6 +52,11 @@
             this.label4 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label3 = new System.Windows.Forms.Label();
+            this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.label5 = new System.Windows.Forms.Label();
+            this.ProgressBarText = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.UserImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.WidthValue)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
@@ -59,11 +64,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // LoadImageButon
             // 
-            this.LoadImageButon.Location = new System.Drawing.Point(103, 151);
+            this.LoadImageButon.Location = new System.Drawing.Point(141, 169);
             this.LoadImageButon.Name = "LoadImageButon";
             this.LoadImageButon.Size = new System.Drawing.Size(75, 23);
             this.LoadImageButon.TabIndex = 0;
@@ -78,11 +85,11 @@
             // UserImageBox
             // 
             this.UserImageBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.UserImageBox.Location = new System.Drawing.Point(103, 25);
-            this.UserImageBox.MaximumSize = new System.Drawing.Size(100, 100);
+            this.UserImageBox.Location = new System.Drawing.Point(97, 25);
+            this.UserImageBox.MaximumSize = new System.Drawing.Size(200, 200);
             this.UserImageBox.MinimumSize = new System.Drawing.Size(120, 120);
             this.UserImageBox.Name = "UserImageBox";
-            this.UserImageBox.Size = new System.Drawing.Size(120, 120);
+            this.UserImageBox.Size = new System.Drawing.Size(175, 138);
             this.UserImageBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.UserImageBox.TabIndex = 1;
             this.UserImageBox.TabStop = false;
@@ -563,15 +570,14 @@
             "White\t\t252\t251\t248"});
             this.dmcPaletteBox.Location = new System.Drawing.Point(12, 25);
             this.dmcPaletteBox.Name = "dmcPaletteBox";
-            this.dmcPaletteBox.Size = new System.Drawing.Size(82, 499);
+            this.dmcPaletteBox.Size = new System.Drawing.Size(82, 679);
             this.dmcPaletteBox.TabIndex = 3;
             this.dmcPaletteBox.SelectedIndexChanged += new System.EventHandler(this.dmcPaletteBox_SelectedIndexChanged);
             // 
             // paletteCount
             // 
-            this.paletteCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.paletteCount.AutoSize = true;
-            this.paletteCount.Location = new System.Drawing.Point(100, 523);
+            this.paletteCount.Location = new System.Drawing.Point(100, 667);
             this.paletteCount.Name = "paletteCount";
             this.paletteCount.Size = new System.Drawing.Size(71, 26);
             this.paletteCount.TabIndex = 4;
@@ -590,7 +596,7 @@
             // 
             // ConvertButton
             // 
-            this.ConvertButton.Location = new System.Drawing.Point(103, 180);
+            this.ConvertButton.Location = new System.Drawing.Point(141, 370);
             this.ConvertButton.Name = "ConvertButton";
             this.ConvertButton.Size = new System.Drawing.Size(75, 23);
             this.ConvertButton.TabIndex = 6;
@@ -600,9 +606,9 @@
             // 
             // WidthValue
             // 
-            this.WidthValue.Location = new System.Drawing.Point(229, 39);
+            this.WidthValue.Location = new System.Drawing.Point(129, 11);
             this.WidthValue.Maximum = new decimal(new int[] {
-            200,
+            1000,
             0,
             0,
             0});
@@ -624,7 +630,7 @@
             // WidthLabel
             // 
             this.WidthLabel.AutoSize = true;
-            this.WidthLabel.Location = new System.Drawing.Point(230, 24);
+            this.WidthLabel.Location = new System.Drawing.Point(3, 13);
             this.WidthLabel.Name = "WidthLabel";
             this.WidthLabel.Size = new System.Drawing.Size(35, 13);
             this.WidthLabel.TabIndex = 8;
@@ -633,7 +639,7 @@
             // numericUpDown1
             // 
             this.numericUpDown1.Enabled = false;
-            this.numericUpDown1.Location = new System.Drawing.Point(229, 76);
+            this.numericUpDown1.Location = new System.Drawing.Point(129, 37);
             this.numericUpDown1.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -646,7 +652,7 @@
             // HeightLabel
             // 
             this.HeightLabel.AutoSize = true;
-            this.HeightLabel.Location = new System.Drawing.Point(230, 61);
+            this.HeightLabel.Location = new System.Drawing.Point(3, 39);
             this.HeightLabel.Name = "HeightLabel";
             this.HeightLabel.Size = new System.Drawing.Size(38, 13);
             this.HeightLabel.TabIndex = 10;
@@ -654,15 +660,13 @@
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(103, 209);
+            this.progressBar.Location = new System.Drawing.Point(142, 399);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(74, 13);
             this.progressBar.TabIndex = 11;
             // 
             // dataGridView1
             // 
-            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
             this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
@@ -682,14 +686,14 @@
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridView1.GridColor = System.Drawing.SystemColors.ButtonFace;
-            this.dataGridView1.Location = new System.Drawing.Point(278, 12);
+            this.dataGridView1.Location = new System.Drawing.Point(97, 454);
             this.dataGridView1.Name = "dataGridView1";
             dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.MenuText;
             dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.MenuText;
             this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle3;
-            this.dataGridView1.Size = new System.Drawing.Size(254, 524);
+            this.dataGridView1.Size = new System.Drawing.Size(175, 148);
             this.dataGridView1.TabIndex = 12;
             this.dataGridView1.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellDoubleClick);
             // 
@@ -701,15 +705,15 @@
             "CIE94",
             "CMC l:C",
             "CIE2000"});
-            this.AlgorithmType.Location = new System.Drawing.Point(103, 314);
+            this.AlgorithmType.Location = new System.Drawing.Point(106, 115);
             this.AlgorithmType.Name = "AlgorithmType";
-            this.AlgorithmType.Size = new System.Drawing.Size(121, 21);
+            this.AlgorithmType.Size = new System.Drawing.Size(65, 21);
             this.AlgorithmType.TabIndex = 13;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(103, 295);
+            this.label2.Location = new System.Drawing.Point(3, 118);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(97, 13);
             this.label2.TabIndex = 14;
@@ -717,7 +721,7 @@
             // 
             // numericUpDown2
             // 
-            this.numericUpDown2.Location = new System.Drawing.Point(205, 391);
+            this.numericUpDown2.Location = new System.Drawing.Point(129, 89);
             this.numericUpDown2.Name = "numericUpDown2";
             this.numericUpDown2.Size = new System.Drawing.Size(42, 20);
             this.numericUpDown2.TabIndex = 16;
@@ -726,11 +730,11 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(99, 393);
+            this.label4.Location = new System.Drawing.Point(3, 91);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(99, 13);
+            this.label4.Size = new System.Drawing.Size(116, 13);
             this.label4.TabIndex = 17;
-            this.label4.Text = "Auto match threads";
+            this.label4.Text = "Auto Matched Threads";
             // 
             // pictureBox1
             // 
@@ -741,6 +745,7 @@
             this.pictureBox1.TabIndex = 18;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
+            this.pictureBox1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseClick);
             // 
             // panel1
             // 
@@ -748,30 +753,76 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.AutoScroll = true;
-            this.panel1.AutoScrollMargin = new System.Drawing.Size(20, 20);
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.pictureBox1);
-            this.panel1.Location = new System.Drawing.Point(538, 12);
+            this.panel1.Location = new System.Drawing.Point(278, 25);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(698, 524);
+            this.panel1.Size = new System.Drawing.Size(813, 682);
             this.panel1.TabIndex = 19;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(3, 65);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(49, 13);
+            this.label3.TabIndex = 20;
+            this.label3.Text = "Grid Size";
+            // 
+            // numericUpDown3
+            // 
+            this.numericUpDown3.Location = new System.Drawing.Point(129, 63);
+            this.numericUpDown3.Name = "numericUpDown3";
+            this.numericUpDown3.Size = new System.Drawing.Size(42, 20);
+            this.numericUpDown3.TabIndex = 21;
+            this.numericUpDown3.ValueChanged += new System.EventHandler(this.numericUpDown3_ValueChanged);
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.WidthLabel);
+            this.panel2.Controls.Add(this.label3);
+            this.panel2.Controls.Add(this.label2);
+            this.panel2.Controls.Add(this.numericUpDown3);
+            this.panel2.Controls.Add(this.AlgorithmType);
+            this.panel2.Controls.Add(this.WidthValue);
+            this.panel2.Controls.Add(this.label4);
+            this.panel2.Controls.Add(this.numericUpDown1);
+            this.panel2.Controls.Add(this.HeightLabel);
+            this.panel2.Controls.Add(this.numericUpDown2);
+            this.panel2.Location = new System.Drawing.Point(97, 198);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(175, 166);
+            this.panel2.TabIndex = 22;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(103, 623);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(63, 13);
+            this.label5.TabIndex = 23;
+            this.label5.Text = "grid position";
+            // 
+            // ProgressBarText
+            // 
+            this.ProgressBarText.Location = new System.Drawing.Point(97, 415);
+            this.ProgressBarText.Name = "ProgressBarText";
+            this.ProgressBarText.Size = new System.Drawing.Size(171, 18);
+            this.ProgressBarText.TabIndex = 24;
+            this.ProgressBarText.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(1248, 556);
+            this.ClientSize = new System.Drawing.Size(1103, 726);
+            this.Controls.Add(this.ProgressBarText);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.numericUpDown2);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.AlgorithmType);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.progressBar);
-            this.Controls.Add(this.HeightLabel);
-            this.Controls.Add(this.numericUpDown1);
-            this.Controls.Add(this.WidthLabel);
-            this.Controls.Add(this.WidthValue);
             this.Controls.Add(this.ConvertButton);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.paletteCount);
@@ -791,6 +842,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).EndInit();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -818,6 +872,11 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.NumericUpDown numericUpDown3;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label ProgressBarText;
     }
 }
 
