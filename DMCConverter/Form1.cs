@@ -20,6 +20,7 @@ namespace DMCConverter
         public int maxSize = 100;
         public int tickedCount = 0;
         public int threadAmount = 0;
+        public int imageGridSize;
 
         public Image image;
         public Image toConvert;
@@ -41,6 +42,7 @@ namespace DMCConverter
         public Form1()
         {
             InitializeComponent();
+
             paletteCount.Text = "Palette Count\n0 / " + dmcPaletteBox.Items.Count.ToString();
             DMCDataGrid = dataGridView1;
 
@@ -54,9 +56,11 @@ namespace DMCConverter
             //sets all DMC values as a variable
             allDMCValues = new List<String>(dmcPaletteBox.Items.Cast<String>());
 
+            //create graphics for the picture box. Used for drawing the converted image
             g = pictureBox1.CreateGraphics();
 
-            
+            //initialize the size of the display grid
+            imageGridSize = (int)numericUpDown3.Value;
         }
         
         /// <summary>
@@ -81,7 +85,6 @@ namespace DMCConverter
             string targetFile = Path.ChangeExtension(sourceFile, "png");
 
             //load image png and assign it to an Image variable
-
             //this is here to catch the event a user opens the load dialogue and presses the cancel button, without loading an image.
             try
             {
@@ -146,15 +149,16 @@ namespace DMCConverter
                 DMCDataGrid.Rows.Clear();
             }
 
-            if (tickedCount == 0 && threadAmount > 0)
+            //if threadAmount is greater than 0, the user wants to auto generate the best matching DMC colours
+            //throw out the selected DMC values, and make a new empty list to store the auto generated DMC colours in.
+            if (threadAmount > 0)
             {
                 selectedDMCValues = new List<string>();
             }
 
-            
             //call the process image method the convert our image to DMC values and display the values on a grid
             //store the returned dmc pixel array and rgbArray to recall them if user accidentally double clicks to mark a grid cell
-            Tuple<string[,],Color[,]> tupleReturn = ConvertImg.processImage(threadAmount, resized, selectedDMCValues, progressBar, DMCDataGrid, AlgorithmType.SelectedIndex, allDMCValues, dmcPaletteBox);
+            Tuple<string[,],Color[,]> tupleReturn = ConvertImg.processImage(threadAmount, resized, selectedDMCValues, progressBar, ProgressBarText, DMCDataGrid, AlgorithmType.SelectedIndex, allDMCValues, dmcPaletteBox);
             dmcDataStore = tupleReturn.Item1;
             rgbArray = tupleReturn.Item2;
 
@@ -162,14 +166,18 @@ namespace DMCConverter
             tickedCount = dmcPaletteBox.CheckedItems.Count;
             paletteCount.Text = "Palette Count\n" + tickedCount.ToString() + " / " + dmcPaletteBox.Items.Count.ToString();
 
+            //tell program that a conversion has just taken place
+            //this is here to prevent drawing the grid colors, before the grid colours have been established
+            //DrawImage function checks for this
             converted = true;
 
+            //re-draw the graphics to update changes made
             pictureBox1.Refresh();
 
-
+            ProgressBarText.Text = "Conversion Complete";
         }
 
-        private void drawImage()
+        private void DrawImage()
         {
             Brush red = new SolidBrush(Color.FromArgb(20,20,20));
             Pen redPen = new Pen(red, 1);
@@ -177,18 +185,17 @@ namespace DMCConverter
             int Height = (int)numericUpDown1.Value;
             int Width = (int)WidthValue.Value;
 
-
             for (int i = 0; i < Width + 1; i++)
             {
-                g.DrawLine(redPen, i * 5, 0, i * 5, Height * 5);
+                g.DrawLine(redPen, i * imageGridSize, 0, i * imageGridSize, Height * imageGridSize);
             }
             for (int i = 0; i < Height + 1; i++)
             {
-                g.DrawLine(redPen, 0, i * 5, Width * 5, i * 5);
+                g.DrawLine(redPen, 0, i * imageGridSize, Width * imageGridSize, i * imageGridSize);
             }
 
-            pictureBox1.Width = Width  * 5 +1;
-            pictureBox1.Height = Height * 5 +1;
+            pictureBox1.Width = Width  * imageGridSize + 1;
+            pictureBox1.Height = Height * imageGridSize + 1;
 
             if (converted)
             {
@@ -198,14 +205,10 @@ namespace DMCConverter
                     {
                         Brush DMCcolour = new SolidBrush(rgbArray[i, j]);
 
-                        g.FillRectangle(DMCcolour, j * 5 +1, i * 5 +1, 4, 4);
+                        g.FillRectangle(DMCcolour, j * imageGridSize + 1, i * imageGridSize + 1, imageGridSize -1 , imageGridSize -1);
                     }
                 }
             }
-            
-
-
-
         }
 
         public void EnableDoubleBuffering()
@@ -252,7 +255,6 @@ namespace DMCConverter
             numericUpDown1.Value = resized.Height;
 
             pictureBox1.Refresh();
-            
         }
 
         /// <summary>
@@ -299,12 +301,22 @@ namespace DMCConverter
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
             g = e.Graphics;
-            drawImage();
+            DrawImage();
         }
 
+        private void numericUpDown3_ValueChanged(object sender, EventArgs e)
+        {
+            imageGridSize = (int)numericUpDown3.Value;
+            pictureBox1.Refresh();
+        }
 
+        //when user clicks on image grid, show the grid co-ordinates of the mouse click
+        private void pictureBox1_MouseClick(object sender, MouseEventArgs e)
+        {
+            MouseEventArgs me = (MouseEventArgs)e;
+            Point coordinates = me.Location;
 
-
-
+            label5.Text = "x:" + ((me.X / imageGridSize) + 1).ToString() + ", y:" + ((me.Y / imageGridSize) + 1).ToString();
+        }
     }
 }

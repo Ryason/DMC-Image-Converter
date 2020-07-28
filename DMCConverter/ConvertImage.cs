@@ -20,11 +20,12 @@ namespace DMCConverter
         /// </summary>
         /// <param name="img">The image the user wants to convert to DMC</param>
         /// <param name="vals"> List of selected DMC values </param>
-        public static Tuple<string[,],Color[,]> processImage(int threadAmount, Image img, List<String> vals, ProgressBar progressBar, DataGridView DMCDataGrid, int AlgorithmType, List<String> allDMCValues, CheckedListBox checkBox)
+        public static Tuple<string[,],Color[,]> processImage(int threadAmount, Image img, List<String> vals, ProgressBar progressBar, Label progressBarText, DataGridView DMCDataGrid, int AlgorithmType, List<String> allDMCValues, CheckedListBox checkBox)
         {
+            progressBar.Value = 0;
             //dictionary for storing pixel values, to determine most frequesnt colours.
             Dictionary<Color, int> BestMatchedColours = new Dictionary<Color, int>();
-
+            
             //image that we are processing
             Image image = img;
 
@@ -40,9 +41,6 @@ namespace DMCConverter
             //used in looping over each pixel
             int w = convert.Width;
             int h = convert.Height;
-
-            //starte a counter to help track progress of how many matches we have completed
-            int count = 0;
 
             //also to track progress of completed matches, and used in displaying total number of stiches
             int total = w * h;
@@ -79,11 +77,15 @@ namespace DMCConverter
             //check if wanting to auto generate best threads to use in the image conversion
             if (threadAmount > 0)
             {
-                counter = 0;
+                
+                progressBarText.Text = "Finding Best Thread Colours";
+                Application.DoEvents();
+                //remove all checked DMC values, as new finding best matches
                 for (int i = 0; i < checkBox.Items.Count; i++)
                 {
                     checkBox.SetItemCheckState(i, 0);
                 }
+
                 //loop over all pixels in the image that we want to convert
                 for (int i = 0; i < w; i++)
                 {
@@ -101,8 +103,11 @@ namespace DMCConverter
                         else
                         {
                             colourCount.Add(currentDMC, 1);
-
                         }
+
+                        //increase the value of the progress bar
+                        counter++;
+                        progressBar.Value = Convert.ToInt32(Math.Round(((float)counter / (float)total) * 100f));
                     }
                 }
 
@@ -130,7 +135,6 @@ namespace DMCConverter
                 foreach(var item in commonColours)
                 {
                     mostCommonDMC.Add(item);
-                    counter = 0;
 
                     //for each of the common dmc values, check their checkbox in the selection panel, 
                     //so user knows which ones have been suggested
@@ -150,6 +154,10 @@ namespace DMCConverter
 
             //loop over all pixels and compare every dmc rgb value to the pixel's rgb value.
             //calculate the closest matching dmc value, and store it in an array.
+            progressBar.Value = 0;
+            counter = 0;
+            progressBarText.Text = "Matching Each Pixel To DMC";
+            Application.DoEvents();
             for (int i = 0; i < w; i++)
             {
                 for (int j = 0; j < h; j++)
@@ -222,8 +230,8 @@ namespace DMCConverter
                     }
 
                     //increase the value of the progress bar
-                    count += 1;
-                    progressBar.Value = Convert.ToInt32(Math.Round(((float)count / (float)total)*100f));
+                    counter += 1;
+                    progressBar.Value = Convert.ToInt32(Math.Round(((float)counter / (float)total)*100f));
 
                     //again, this float ensures the first comparison will always be stored as the closest matching dmc value
                     distance = 999999999999999;
@@ -236,6 +244,10 @@ namespace DMCConverter
             //set the datagrid width to that of the resized image
             DMCDataGrid.ColumnCount = w;
 
+            progressBar.Value = 0;
+            progressBarText.Text = "Drawing Converted Image";
+            Application.DoEvents();
+            counter = 0;
             for (int i = 0; i < h; i++)
             {
                 //create a new row for each new step in height
@@ -250,6 +262,11 @@ namespace DMCConverter
                     row.Cells[j].Value = dmcPixelDataArray[i, j];
                     row.Cells[j].Style.BackColor = convertedIMG.GetPixel(j, i);
                     rgbArray[i, j] = convertedIMG.GetPixel(j, i);
+                    
+
+                    //increase the value of the progress bar
+                    counter += 1;
+                    progressBar.Value = Convert.ToInt32(Math.Round(((float)counter / (float)total) * 100f));
                 }
 
                 //add populated row to the datagridview
@@ -265,13 +282,12 @@ namespace DMCConverter
 
         public static string FindClosestDMC(Color RGBToDMC, List<string> DMCValues, int AlgorithmType)
         {
-            
             double distance = 99999999999d;
 
-            string closestDMC = ""; 
-
-            foreach (var item in DMCValues)
+            string closestDMC = "";
+            for (int i = 0; i < DMCValues.Count; i++)
             {
+                string item = DMCValues[i];
                 //current in-loop DMC rgb values
                 int rDMC = Convert.ToInt32(item.Split('	')[2]);
                 int gDMC = Convert.ToInt32(item.Split('	')[3]);
@@ -284,7 +300,6 @@ namespace DMCConverter
                 //set up new rgb values for use in the colormine deltaE calculation
                 Rgb DMC = new Rgb { R = rDMC, G = gDMC, B = bDMC };
                 Rgb rgb = new Rgb { R = r, G = g, B = b };
-
 
                 //create double for deltaE result
                 double deltaE = 0d;
@@ -301,8 +316,8 @@ namespace DMCConverter
                         break;
                     case 1:
                         deltaE = DMC.Compare(rgb, new Cie94Comparison());
-                        break;               
-                    case 2:                  
+                        break;
+                    case 2:
                         deltaE = DMC.Compare(rgb, new CmcComparison());
                         break;
                     case 3:
@@ -323,7 +338,6 @@ namespace DMCConverter
 
             return closestDMC;
         }
-
 
         /// <summary>
         /// Resizes the images to users specified width
