@@ -171,10 +171,13 @@ namespace DMCConverter
                         //https://github.com/muak/ColorMine
                         //Also using the colorMine's comparison algorithm
 
+                        //split each item and convert strings to ints
+                        List<string> splitItem = item.Split('\t').ToList();
+
                         //current in-loop DMC rgb values
-                        int rVal = Convert.ToInt32(item.Split('	')[2]);
-                        int gVal = Convert.ToInt32(item.Split('	')[3]);
-                        int bVal = Convert.ToInt32(item.Split('	')[4]);
+                        int rVal = Convert.ToInt32(splitItem[2]);
+                        int gVal = Convert.ToInt32(splitItem[3]);
+                        int bVal = Convert.ToInt32(splitItem[4]);
                         
                         Color DMCcolour = Color.FromArgb(rVal, gVal, bVal);
                         
@@ -223,7 +226,7 @@ namespace DMCConverter
                             distance = deltaE;
 
                             //set the corresponding dmc value as the new closest match for the current pixel
-                            closestDMC = item.Split('	')[0];
+                            closestDMC = splitItem[0];
                             convertedIMG.SetPixel(i, j, Color.FromArgb( rVal, gVal, bVal));
                             dmcPixelDataArray[j,i] = closestDMC;
                         }
