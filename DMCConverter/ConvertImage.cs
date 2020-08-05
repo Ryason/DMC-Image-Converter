@@ -290,11 +290,15 @@ namespace DMCConverter
             string closestDMC = "";
             for (int i = 0; i < DMCValues.Count; i++)
             {
-                string item = DMCValues[i];
+                string itemString = DMCValues[i];
+
+                string[] item = DMCValues[i].Split('\t');
+
+
                 //current in-loop DMC rgb values
-                int rDMC = Convert.ToInt32(item.Split('	')[2]);
-                int gDMC = Convert.ToInt32(item.Split('	')[3]);
-                int bDMC = Convert.ToInt32(item.Split('	')[4]);
+                int rDMC = Convert.ToInt32(item[2]);
+                int gDMC = Convert.ToInt32(item[3]);
+                int bDMC = Convert.ToInt32(item[4]);
 
                 int r = RGBToDMC.R;
                 int g = RGBToDMC.G;
@@ -335,7 +339,7 @@ namespace DMCConverter
                     distance = deltaE;
 
                     //set the corresponding dmc value as the new closest match for the current pixel
-                    closestDMC = item;
+                    closestDMC = itemString;
                 }
             }
 

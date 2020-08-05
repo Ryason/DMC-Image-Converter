@@ -205,7 +205,7 @@ namespace DMCConverter
                     {
                         Brush DMCcolour = new SolidBrush(rgbArray[i, j]);
 
-                        g.FillRectangle(DMCcolour, j * imageGridSize + 1, i * imageGridSize + 1, imageGridSize -1 , imageGridSize -1);
+                        g.FillRectangle(DMCcolour, j * imageGridSize + 1, i * imageGridSize + 1, imageGridSize - 1, imageGridSize - 1);
                     }
                 }
             }
@@ -315,8 +315,21 @@ namespace DMCConverter
         {
             MouseEventArgs me = (MouseEventArgs)e;
             Point coordinates = me.Location;
+            int xVal = ((me.X / imageGridSize) + 1);
+            int yVal = ((me.Y / imageGridSize) + 1);
 
-            label5.Text = "x:" + ((me.X / imageGridSize) + 1).ToString() + ", y:" + ((me.Y / imageGridSize) + 1).ToString();
+            if (converted && me.Button == MouseButtons.Left)
+            {
+                label5.Text = "x:" + xVal.ToString() + ", y:" + yVal.ToString() + "\n" + "DMC: " + dmcDataStore[yVal - 1, xVal - 1].ToString();
+            }
+
+            if (converted && me.Button == MouseButtons.Right)
+            {
+                if (rgbArray[yVal - 1, xVal - 1] == Color.Red)
+                {
+                    
+                }
+            }
         }
     }
 }
