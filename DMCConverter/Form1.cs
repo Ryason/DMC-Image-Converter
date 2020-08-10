@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -9,18 +10,22 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Reflection;
+using System.Runtime.Serialization;
 
 namespace DMCConverter
 {
+    [Serializable]
     public partial class Form1 : Form
     {
-        public bool imageLoaded = false;
-        public bool converted = false;
+        public bool imageLoaded;
+        public bool converted;
 
-        public int maxSize = 100;
-        public int tickedCount = 0;
-        public int threadAmount = 0;
+        public int maxSize;
+        public int tickedCount;
+        public int threadAmount;
         public int imageGridSize;
+        public int imgHeight;
+        public int imgWidth;
 
         public Image image;
         public Image toConvert;
@@ -38,9 +43,15 @@ namespace DMCConverter
         public Graphics g;
 
 
-
         public Form1()
         {
+            imageLoaded = false;
+            converted = false;
+
+            maxSize = 100;
+            tickedCount = 0;
+            threadAmount = 0;
+
             InitializeComponent();
 
             paletteCount.Text = "Palette Count\n0 / " + dmcPaletteBox.Items.Count.ToString();
@@ -61,6 +72,8 @@ namespace DMCConverter
 
             //initialize the size of the display grid
             imageGridSize = (int)numericUpDown3.Value;
+
+
         }
         
         /// <summary>
@@ -175,27 +188,17 @@ namespace DMCConverter
             pictureBox1.Refresh();
 
             ProgressBarText.Text = "Conversion Complete";
+
         }
 
         private void DrawImage()
         {
-            Brush red = new SolidBrush(Color.FromArgb(20,20,20));
-            Pen redPen = new Pen(red, 1);
+            Brush black = new SolidBrush(Color.FromArgb(20,20,20));
+            Pen blackPen = new Pen(black, 1);
+            Pen thickBlackPen = new Pen(black, (imageGridSize / 10) + 2f );
 
-            int Height = (int)numericUpDown1.Value;
-            int Width = (int)WidthValue.Value;
-
-            for (int i = 0; i < Width + 1; i++)
-            {
-                g.DrawLine(redPen, i * imageGridSize, 0, i * imageGridSize, Height * imageGridSize);
-            }
-            for (int i = 0; i < Height + 1; i++)
-            {
-                g.DrawLine(redPen, 0, i * imageGridSize, Width * imageGridSize, i * imageGridSize);
-            }
-
-            pictureBox1.Width = Width  * imageGridSize + 1;
-            pictureBox1.Height = Height * imageGridSize + 1;
+            imgHeight = (int)numericUpDown1.Value;
+            imgWidth = (int)WidthValue.Value;
 
             if (converted)
             {
@@ -208,7 +211,38 @@ namespace DMCConverter
                         g.FillRectangle(DMCcolour, j * imageGridSize + 1, i * imageGridSize + 1, imageGridSize - 1, imageGridSize - 1);
                     }
                 }
+
+                //activates the mouse toolTip
+                toolTip1.Active = true;
             }
+
+            for (int i = 0; i < Width + 1; i++)
+            {
+                if (i % 10 == 0)
+                {
+                    g.DrawLine(thickBlackPen, i * imageGridSize, 0, i * imageGridSize, imgHeight * imageGridSize);
+                }
+                else
+                {
+                    g.DrawLine(blackPen, i * imageGridSize, 0, i * imageGridSize, imgHeight * imageGridSize);
+                }
+            }
+            for (int i = 0; i < imgHeight + 1; i++)
+            {
+                if (i % 10 == 0)
+                {
+                    g.DrawLine(thickBlackPen, 0, i * imageGridSize, Width * imageGridSize, i * imageGridSize);
+                }
+                else
+                {
+                    g.DrawLine(blackPen, 0, i * imageGridSize, Width * imageGridSize, i * imageGridSize);
+                }
+            }
+
+            pictureBox1.Width = imgWidth * imageGridSize + 1;
+            pictureBox1.Height = imgHeight * imageGridSize + 1;
+
+
         }
 
         public void EnableDoubleBuffering()
@@ -245,8 +279,8 @@ namespace DMCConverter
             }
 
             //if image is present, resize it to specified width.
-            resized = ConvertImg.resizeImage(toConvert, 
-                                             toConvert.Width, 
+            resized = ConvertImg.resizeImage(toConvert,
+                                             toConvert.Width,
                                              toConvert.Height, 
                                              Convert.ToInt32(Math.Round(WidthValue.Value,0)));
 
@@ -254,6 +288,7 @@ namespace DMCConverter
             UserImageBox.Image = resized;
             numericUpDown1.Value = resized.Height;
 
+            //redraw the image
             pictureBox1.Refresh();
         }
 
@@ -330,6 +365,23 @@ namespace DMCConverter
                     
                 }
             }
+        }
+
+        private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (converted)
+            {
+                MouseEventArgs me = (MouseEventArgs)e;
+                int xVal = Math.Min(((me.X / imageGridSize) + 1), imgWidth);
+                int yVal = Math.Min(((me.Y / imageGridSize) + 1), imgHeight);
+
+                toolTip1.SetToolTip(pictureBox1, $"x:{xVal} y:{yVal} \n" + "DMC:" + dmcDataStore[yVal - 1, xVal - 1].ToString());
+            }
+        }
+
+        public void SaveSession()
+        {
+
         }
     }
 }
