@@ -3,6 +3,14 @@
 ### About
 DMC Image Converter is a tool used to create cross stitch patterns from images.
 
+### Currently Working On
+- Improving the way the conversion is displayed. Transitioning from a dataGrid, to a drawn image based grid.
+- Adding a load/save feature. Allowing the user to make a conversion, save it, and then re-load it the next time the launch the program. Without having to convert it again.
+- Adding the ability to draw your own pattern, or edit a conversion, using any DMC colour the user wants to (paint).
+- Adding a marking function, so the user can mark stitches on the grid that have been stiched.
+- Figuring out the best way to save the conversion to either an image or pdf, for use away from the program.
+- re-arranging the ui and improving the overall look.
+
 ### How To Use
 > Load an image into the application by clicking the Load Image button.
 
