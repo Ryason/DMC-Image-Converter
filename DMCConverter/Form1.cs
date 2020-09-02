@@ -32,6 +32,7 @@ namespace DMCConverter
         public Image resized;
 
         public Color[,] rgbArray;
+        public Color[,] rgbArrayToDrawFrom;
 
         public List<String> allDMCValues;
         public List<String> selectedDMCValues;
@@ -174,6 +175,7 @@ namespace DMCConverter
             Tuple<string[,],Color[,]> tupleReturn = ConvertImg.processImage(threadAmount, resized, selectedDMCValues, progressBar, ProgressBarText, DMCDataGrid, AlgorithmType.SelectedIndex, allDMCValues, dmcPaletteBox);
             dmcDataStore = tupleReturn.Item1;
             rgbArray = tupleReturn.Item2;
+            rgbArrayToDrawFrom = tupleReturn.Item2;
 
             //update palette counter, just in case user generated threads and didnt pick any
             tickedCount = dmcPaletteBox.CheckedItems.Count;
@@ -206,8 +208,9 @@ namespace DMCConverter
                 {
                     for (int j = 0; j < WidthValue.Value; j++)
                     {
-                        Brush DMCcolour = new SolidBrush(rgbArray[i, j]);
-
+                        Brush DMCcolour = new SolidBrush(rgbArrayToDrawFrom[i, j]);
+                        Console.WriteLine(rgbArrayToDrawFrom[0, 0].ToArgb().ToString() + rgbArrayToDrawFrom[i, j].ToArgb().ToString());
+                        
                         g.FillRectangle(DMCcolour, j * imageGridSize + 1, i * imageGridSize + 1, imageGridSize - 1, imageGridSize - 1);
                     }
                 }
@@ -355,15 +358,23 @@ namespace DMCConverter
 
             if (converted && me.Button == MouseButtons.Left)
             {
-                label5.Text = "x:" + xVal.ToString() + ", y:" + yVal.ToString() + "\n" + "DMC: " + dmcDataStore[yVal - 1, xVal - 1].ToString();
+                label5.Text = "x:" + xVal.ToString() + ", y:" + yVal.ToString() + "\n" + "DMC: " + dmcDataStore[yVal - 1, xVal - 1].ToString() + "\n" + rgbArrayToDrawFrom[yVal - 1, xVal - 1].ToArgb().ToString();
             }
 
+            //dont modify the array, just draw a red rectangle over the grid
+            //could store an array of marked positions. and cycle through them at the end of image drawing.
             if (converted && me.Button == MouseButtons.Right)
             {
-                if (rgbArray[yVal - 1, xVal - 1] == Color.Red)
+                if (rgbArrayToDrawFrom[yVal - 1, xVal - 1] == Color.Red)
                 {
-                    
+                    rgbArrayToDrawFrom[yVal - 1, xVal - 1] = rgbArray[yVal - 1, xVal - 1];
                 }
+                else
+                {
+                    rgbArrayToDrawFrom[yVal - 1, xVal - 1] = Color.FromArgb(255, 0, 0);
+                }
+                pictureBox1.Refresh();
+
             }
         }
 
