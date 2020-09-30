@@ -187,20 +187,28 @@ namespace DMCConverter
             converted = true;
 
             //re-draw the graphics to update changes made
-            pictureBox1.Refresh();
+            Invalidate();
 
             ProgressBarText.Text = "Conversion Complete";
 
         }
 
-        private void DrawImage()
+        protected override void OnPaint(PaintEventArgs e)
         {
-            Brush black = new SolidBrush(Color.FromArgb(20,20,20));
+
+            Brush black = new SolidBrush(Color.FromArgb(20, 20, 20));
             Pen blackPen = new Pen(black, 1);
-            Pen thickBlackPen = new Pen(black, (imageGridSize / 10) + 2f );
+            Pen thickBlackPen = new Pen(black, (imageGridSize / 10) + 2f);
 
             imgHeight = (int)numericUpDown1.Value;
             imgWidth = (int)WidthValue.Value;
+
+
+
+            // draw here
+            Bitmap bm = new Bitmap(imgWidth * imageGridSize + 1, imgHeight * imageGridSize + 1);
+            Graphics gr = Graphics.FromImage(bm);
+
 
             if (converted)
             {
@@ -209,9 +217,9 @@ namespace DMCConverter
                     for (int j = 0; j < WidthValue.Value; j++)
                     {
                         Brush DMCcolour = new SolidBrush(rgbArrayToDrawFrom[i, j]);
-                        Console.WriteLine(rgbArrayToDrawFrom[0, 0].ToArgb().ToString() + rgbArrayToDrawFrom[i, j].ToArgb().ToString());
-                        
-                        g.FillRectangle(DMCcolour, j * imageGridSize + 1, i * imageGridSize + 1, imageGridSize - 1, imageGridSize - 1);
+                        //Console.WriteLine(rgbArrayToDrawFrom[0, 0].ToArgb().ToString() + rgbArrayToDrawFrom[i, j].ToArgb().ToString());
+
+                        gr.FillRectangle(DMCcolour, j * imageGridSize + 1, i * imageGridSize + 1, imageGridSize - 1, imageGridSize - 1);
                     }
                 }
 
@@ -219,32 +227,36 @@ namespace DMCConverter
                 toolTip1.Active = true;
             }
 
+            //create a grid over the image, with a thicker grid, every 10 squares
+            //thickness of grid lines are determined by the selected gridSize
             for (int i = 0; i < Width + 1; i++)
             {
                 if (i % 10 == 0)
                 {
-                    g.DrawLine(thickBlackPen, i * imageGridSize, 0, i * imageGridSize, imgHeight * imageGridSize);
+                    gr.DrawLine(thickBlackPen, i * imageGridSize, 0, i * imageGridSize, imgHeight * imageGridSize);
                 }
                 else
                 {
-                    g.DrawLine(blackPen, i * imageGridSize, 0, i * imageGridSize, imgHeight * imageGridSize);
+                    gr.DrawLine(blackPen, i * imageGridSize, 0, i * imageGridSize, imgHeight * imageGridSize);
                 }
             }
             for (int i = 0; i < imgHeight + 1; i++)
             {
                 if (i % 10 == 0)
                 {
-                    g.DrawLine(thickBlackPen, 0, i * imageGridSize, Width * imageGridSize, i * imageGridSize);
+                    gr.DrawLine(thickBlackPen, 0, i * imageGridSize, Width * imageGridSize, i * imageGridSize);
                 }
                 else
                 {
-                    g.DrawLine(blackPen, 0, i * imageGridSize, Width * imageGridSize, i * imageGridSize);
+                    gr.DrawLine(blackPen, 0, i * imageGridSize, Width * imageGridSize, i * imageGridSize);
                 }
             }
 
             pictureBox1.Width = imgWidth * imageGridSize + 1;
             pictureBox1.Height = imgHeight * imageGridSize + 1;
 
+            //draw image;
+            pictureBox1.Image = bm;
 
         }
 
@@ -292,7 +304,7 @@ namespace DMCConverter
             numericUpDown1.Value = resized.Height;
 
             //redraw the image
-            pictureBox1.Refresh();
+            Invalidate();
         }
 
         /// <summary>
@@ -336,16 +348,10 @@ namespace DMCConverter
             System.Diagnostics.Debug.WriteLine(threadAmount);
         }
 
-        private void pictureBox1_Paint(object sender, PaintEventArgs e)
-        {
-            g = e.Graphics;
-            DrawImage();
-        }
-
         private void numericUpDown3_ValueChanged(object sender, EventArgs e)
         {
             imageGridSize = (int)numericUpDown3.Value;
-            pictureBox1.Refresh();
+            Invalidate();
         }
 
         //when user clicks on image grid, show the grid co-ordinates of the mouse click
@@ -373,7 +379,7 @@ namespace DMCConverter
                 {
                     rgbArrayToDrawFrom[yVal - 1, xVal - 1] = Color.FromArgb(255, 0, 0);
                 }
-                pictureBox1.Refresh();
+                Invalidate();
 
             }
         }
