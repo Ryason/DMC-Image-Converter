@@ -47,7 +47,6 @@
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.AlgorithmType = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -55,9 +54,12 @@
             this.label3 = new System.Windows.Forms.Label();
             this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.link = new System.Windows.Forms.LinkLabel();
             this.label5 = new System.Windows.Forms.Label();
             this.ProgressBarText = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.saveButton = new System.Windows.Forms.Button();
+            this.loadButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.UserImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.WidthValue)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
@@ -711,15 +713,6 @@
             this.AlgorithmType.Size = new System.Drawing.Size(65, 21);
             this.AlgorithmType.TabIndex = 13;
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 118);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(97, 13);
-            this.label2.TabIndex = 14;
-            this.label2.Text = "Matching Algorithm";
-            // 
             // numericUpDown2
             // 
             this.numericUpDown2.Location = new System.Drawing.Point(129, 89);
@@ -785,9 +778,9 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.link);
             this.panel2.Controls.Add(this.WidthLabel);
             this.panel2.Controls.Add(this.label3);
-            this.panel2.Controls.Add(this.label2);
             this.panel2.Controls.Add(this.numericUpDown3);
             this.panel2.Controls.Add(this.AlgorithmType);
             this.panel2.Controls.Add(this.WidthValue);
@@ -800,10 +793,21 @@
             this.panel2.Size = new System.Drawing.Size(175, 166);
             this.panel2.TabIndex = 22;
             // 
+            // link
+            // 
+            this.link.AutoSize = true;
+            this.link.Location = new System.Drawing.Point(3, 119);
+            this.link.Name = "link";
+            this.link.Size = new System.Drawing.Size(97, 13);
+            this.link.TabIndex = 22;
+            this.link.TabStop = true;
+            this.link.Text = "Matching Algorithm";
+            this.link.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.link_LinkClicked);
+            // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(103, 623);
+            this.label5.Location = new System.Drawing.Point(100, 618);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(63, 13);
             this.label5.TabIndex = 23;
@@ -817,11 +821,33 @@
             this.ProgressBarText.TabIndex = 24;
             this.ProgressBarText.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // saveButton
+            // 
+            this.saveButton.Location = new System.Drawing.Point(193, 608);
+            this.saveButton.Name = "saveButton";
+            this.saveButton.Size = new System.Drawing.Size(75, 23);
+            this.saveButton.TabIndex = 25;
+            this.saveButton.Text = "Save";
+            this.saveButton.UseVisualStyleBackColor = true;
+            this.saveButton.MouseClick += new System.Windows.Forms.MouseEventHandler(this.saveButton_MouseClick);
+            // 
+            // loadButton
+            // 
+            this.loadButton.Location = new System.Drawing.Point(193, 638);
+            this.loadButton.Name = "loadButton";
+            this.loadButton.Size = new System.Drawing.Size(75, 23);
+            this.loadButton.TabIndex = 26;
+            this.loadButton.Text = "Load";
+            this.loadButton.UseVisualStyleBackColor = true;
+            this.loadButton.Click += new System.EventHandler(this.loadButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1103, 726);
+            this.Controls.Add(this.loadButton);
+            this.Controls.Add(this.saveButton);
             this.Controls.Add(this.ProgressBarText);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.panel2);
@@ -870,7 +896,6 @@
         public System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.ComboBox AlgorithmType;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown numericUpDown2;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.PictureBox pictureBox1;
@@ -881,6 +906,9 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label ProgressBarText;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.LinkLabel link;
+        private System.Windows.Forms.Button saveButton;
+        private System.Windows.Forms.Button loadButton;
     }
 }
 
