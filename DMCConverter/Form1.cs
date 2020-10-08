@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Reflection;
 using System.Runtime.Serialization;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace DMCConverter
 {
@@ -19,6 +21,7 @@ namespace DMCConverter
     {
         public bool imageLoaded;
         public bool converted;
+        public bool loading = false;
 
         public int maxSize;
         public int tickedCount;
@@ -34,11 +37,12 @@ namespace DMCConverter
         public Color[,] rgbArray;
         public Color[,] rgbArrayToDrawFrom;
 
-        public List<String> allDMCValues;
-        public List<String> selectedDMCValues;
+        public List<string> allDMCValues;
+        public List<string> selectedDMCValues;
 
         public DataGridView DMCDataGrid;
 
+        public string sourceFile;
         public string[,] dmcDataStore;
 
         public Graphics g;
@@ -57,7 +61,6 @@ namespace DMCConverter
 
             paletteCount.Text = "Palette Count\n0 / " + dmcPaletteBox.Items.Count.ToString();
             DMCDataGrid = dataGridView1;
-
             //my attepmt at enabling doublebuffering, to speed up the datagridview scrolling/rendering slowness.
             //mostly coppied code form stack overflow and an article on 10tec.com that explains the issue and gives some workaround code.
             EnableDoubleBuffering();
@@ -85,18 +88,21 @@ namespace DMCConverter
         public void LoadImageButon_Click(object sender, EventArgs e)
         {
             #region Load Image
-            //sets current progress bar to 0
-            progressBar.Value = 0;
-            
-            //only allows user to pick and load image files
-            openFileDialog1.Filter = "Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png) | *.jpg; *.jpeg; *.jpe; *.jfif; *.png";
+            if (!loading)
+            {
+                //sets current progress bar to 0
+                progressBar.Value = 0;
 
-            //assigns the picked file a variable name 'imageToConvert'
-            DialogResult imageToConvert = openFileDialog1.ShowDialog();
+                //only allows user to pick and load image files
+                openFileDialog1.Filter = "Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png) | *.jpg; *.jpeg; *.jpe; *.jfif; *.png";
 
-            //get path of selected file, and change file to png
-            string sourceFile = openFileDialog1.FileName;
-            string targetFile = Path.ChangeExtension(sourceFile, "png");
+                //assigns the picked file a variable name 'imageToConvert'
+                DialogResult imageToConvert = openFileDialog1.ShowDialog();
+
+                //get path of selected file, and change file to png
+                sourceFile = openFileDialog1.FileName;
+                string targetFile = Path.ChangeExtension(sourceFile, "png");
+            }
 
             //load image png and assign it to an Image variable
             //this is here to catch the event a user opens the load dialogue and presses the cancel button, without loading an image.
@@ -190,6 +196,8 @@ namespace DMCConverter
             Invalidate();
 
             ProgressBarText.Text = "Conversion Complete";
+            SaveSession();
+            LoadSession();
 
         }
 
@@ -286,25 +294,29 @@ namespace DMCConverter
         /// <param name="e"></param>
         public void WidthValue_ValueChanged(object sender, EventArgs e)
         {
-            converted = false;
-            //if no image is present, don't try to resize
-            if (UserImageBox.Image == null)
+
+            if (!loading)
             {
-                return;
+                converted = false;
+                //if no image is present, don't try to resize
+                if (UserImageBox.Image == null)
+                {
+                    return;
+                }
+
+                //if image is present, resize it to specified width.
+                resized = ConvertImg.resizeImage(toConvert,
+                                                 toConvert.Width,
+                                                 toConvert.Height,
+                                                 Convert.ToInt32(Math.Round(WidthValue.Value, 0)));
+
+                //store resized image, ready to be colour matched and converted to DMC olny colours
+                UserImageBox.Image = resized;
+                numericUpDown1.Value = resized.Height;
+
+                //redraw the image
+                Invalidate();
             }
-
-            //if image is present, resize it to specified width.
-            resized = ConvertImg.resizeImage(toConvert,
-                                             toConvert.Width,
-                                             toConvert.Height, 
-                                             Convert.ToInt32(Math.Round(WidthValue.Value,0)));
-
-            //store resized image, ready to be colour matched and converted to DMC olny colours
-            UserImageBox.Image = resized;
-            numericUpDown1.Value = resized.Height;
-
-            //redraw the image
-            Invalidate();
         }
 
         /// <summary>
@@ -396,9 +408,123 @@ namespace DMCConverter
             }
         }
 
+        //try and open a link to information about the colour difference algorithm
+        private void link_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start("https://en.wikipedia.org/wiki/Color_difference");
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Unable to open link that was clicked.");
+            }
+        }
+
+
+        //Allow the saving of converted images (save as json file?)
+        //
+        //THINGS TO STORE
+        //  image file path (string)
+        //  Height, Width of converted image (int)
+        //  rgbArray and rgbArrayToDrawFrom (Color[,])
+        //  selectedDMCValues (List<string>)
+        //  dmcDataStore (string[,])
+        //  threadAmount
+        //  imageGridSize
+        //  algorithmType
         public void SaveSession()
         {
+            //test
+
+
+            ApplicationData appdata = new ApplicationData();
+
+            appdata.sourceFile = sourceFile;
+            appdata.dmcDataStrore = dmcDataStore;
+            appdata.rgbArray = rgbArray;
+            appdata.rgbArrayToDrawFrom = rgbArrayToDrawFrom;
+            appdata.selectedDMCValues = selectedDMCValues;
+            appdata.maxSize = maxSize;
+            appdata.tickedCount = tickedCount;
+            appdata.threadAmount = threadAmount;
+            appdata.imageGridSize = imageGridSize;
+            appdata.imgHeight = imgHeight;
+            appdata.imgWidth = imgWidth;
+
+            string save = JsonConvert.SerializeObject(appdata, Formatting.Indented);
+
+            File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "/Save.json", save);
+
+            Console.WriteLine(save);
+        }
+
+        //Load everything from save file
+        public void LoadSession()
+        {
+            ApplicationData loadData = new ApplicationData();
+            string json = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "/Save.json");
+            loadData = JsonConvert.DeserializeObject<ApplicationData>(json);
+
+            loading = true;
+            converted = true;
+            imageLoaded = true;
+            sourceFile = loadData.sourceFile;
+
+            resized = ConvertImg.resizeImage(Image.FromFile(loadData.sourceFile),
+                                             loadData.imgWidth,
+                                             loadData.imgHeight,
+                                             maxSize);
+            toConvert = resized;
+
+            UserImageBox.Image = resized;
+
+            dmcDataStore = loadData.dmcDataStrore;
+            rgbArray = loadData.rgbArray;
+            rgbArrayToDrawFrom = loadData.rgbArrayToDrawFrom;
+            selectedDMCValues = loadData. selectedDMCValues;
+            maxSize = loadData.maxSize;
+            tickedCount = loadData.tickedCount;
+
+            numericUpDown2.Value = loadData.threadAmount;
+            threadAmount = loadData.threadAmount;
+            numericUpDown3.Value = loadData.imageGridSize;
+            numericUpDown1.Value = loadData.imgHeight;
+            WidthValue.Value = loadData.imgWidth;
+
+            
+
+            Console.WriteLine(loadData.sourceFile);
+
+            Invalidate();
+            loading = false;
 
         }
+
+        private void saveButton_MouseClick(object sender, MouseEventArgs e)
+        {
+            SaveSession();
+        }
+
+        private void loadButton_Click(object sender, EventArgs e)
+        {
+            LoadSession();
+        }
     }
+}
+
+public class ApplicationData
+{
+    public string sourceFile { get; set; }
+    public string[,] dmcDataStrore { get; set; }
+    public Color[,] rgbArray { get; set; }
+    public Color[,] rgbArrayToDrawFrom { get; set; }
+    public List<string> selectedDMCValues { get; set; }
+    public int maxSize { get; set; }
+    public int tickedCount { get; set; }
+    public int threadAmount { get; set; }
+    public int imageGridSize { get; set; }
+    public int imgHeight { get; set; }
+    public int imgWidth { get; set; }
+
 }
