@@ -60,6 +60,7 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.saveButton = new System.Windows.Forms.Button();
             this.loadButton = new System.Windows.Forms.Button();
+            this.CreatePDF = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.UserImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.WidthValue)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
@@ -599,7 +600,7 @@
             // 
             // ConvertButton
             // 
-            this.ConvertButton.Location = new System.Drawing.Point(141, 370);
+            this.ConvertButton.Location = new System.Drawing.Point(193, 370);
             this.ConvertButton.Name = "ConvertButton";
             this.ConvertButton.Size = new System.Drawing.Size(75, 23);
             this.ConvertButton.TabIndex = 6;
@@ -663,7 +664,7 @@
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(142, 399);
+            this.progressBar.Location = new System.Drawing.Point(193, 399);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(74, 13);
             this.progressBar.TabIndex = 11;
@@ -841,11 +842,22 @@
             this.loadButton.UseVisualStyleBackColor = true;
             this.loadButton.Click += new System.EventHandler(this.loadButton_Click);
             // 
+            // CreatePDF
+            // 
+            this.CreatePDF.Location = new System.Drawing.Point(103, 371);
+            this.CreatePDF.Name = "CreatePDF";
+            this.CreatePDF.Size = new System.Drawing.Size(75, 23);
+            this.CreatePDF.TabIndex = 27;
+            this.CreatePDF.Text = "PDF";
+            this.CreatePDF.UseVisualStyleBackColor = true;
+            this.CreatePDF.Click += new System.EventHandler(this.CreatePDF_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1103, 726);
+            this.Controls.Add(this.CreatePDF);
             this.Controls.Add(this.loadButton);
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.ProgressBarText);
@@ -909,6 +921,7 @@
         private System.Windows.Forms.LinkLabel link;
         private System.Windows.Forms.Button saveButton;
         private System.Windows.Forms.Button loadButton;
+        private System.Windows.Forms.Button CreatePDF;
     }
 }
 
