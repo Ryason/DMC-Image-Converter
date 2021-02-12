@@ -25,7 +25,5 @@ namespace DMCConverter
             //openms the pdf for the user
             Process.Start("test.pdf");
         }
-
-
     }
 }
