@@ -47,7 +47,6 @@ namespace DMCConverter
 
         public Graphics g;
 
-
         public Form1()
         {
             imageLoaded = false;
@@ -76,8 +75,6 @@ namespace DMCConverter
 
             //initialize the size of the display grid
             imageGridSize = (int)numericUpDown3.Value;
-
-
         }
         
         /// <summary>
@@ -127,6 +124,7 @@ namespace DMCConverter
             WidthValue.Value = 100;
             #endregion
         }
+
         /// <summary>
         /// called when user selects or deselects a dmc value from the selection box
         /// </summary>
@@ -157,6 +155,7 @@ namespace DMCConverter
             {
                 return;
             }
+
             //checking if image is null makes sure we dont run the conversion without an image present
             if (UserImageBox.Image == null)
             {
@@ -196,14 +195,13 @@ namespace DMCConverter
             Invalidate();
 
             ProgressBarText.Text = "Conversion Complete";
+
             SaveSession();
             LoadSession();
-
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
-
             Brush black = new SolidBrush(Color.FromArgb(20, 20, 20));
             Pen blackPen = new Pen(black, 1);
             Pen thickBlackPen = new Pen(black, (imageGridSize / 10) + 2f);
@@ -211,12 +209,9 @@ namespace DMCConverter
             imgHeight = (int)numericUpDown1.Value;
             imgWidth = (int)WidthValue.Value;
 
-
-
             // draw here
             Bitmap bm = new Bitmap(imgWidth * imageGridSize + 1, imgHeight * imageGridSize + 1);
             Graphics gr = Graphics.FromImage(bm);
-
 
             if (converted)
             {
@@ -248,6 +243,7 @@ namespace DMCConverter
                     gr.DrawLine(blackPen, i * imageGridSize, 0, i * imageGridSize, imgHeight * imageGridSize);
                 }
             }
+
             for (int i = 0; i < imgHeight + 1; i++)
             {
                 if (i % 10 == 0)
@@ -265,7 +261,6 @@ namespace DMCConverter
 
             //draw image;
             pictureBox1.Image = bm;
-
         }
 
         public void EnableDoubleBuffering()
@@ -294,7 +289,6 @@ namespace DMCConverter
         /// <param name="e"></param>
         public void WidthValue_ValueChanged(object sender, EventArgs e)
         {
-
             if (!loading)
             {
                 converted = false;
@@ -392,7 +386,6 @@ namespace DMCConverter
                     rgbArrayToDrawFrom[yVal - 1, xVal - 1] = Color.FromArgb(255, 0, 0);
                 }
                 Invalidate();
-
             }
         }
 
@@ -421,7 +414,6 @@ namespace DMCConverter
             }
         }
 
-
         //Allow the saving of converted images (save as json file?)
         //
         //THINGS TO STORE
@@ -435,9 +427,6 @@ namespace DMCConverter
         //  algorithmType
         public void SaveSession()
         {
-            //test
-
-
             ApplicationData appdata = new ApplicationData();
 
             appdata.sourceFile = sourceFile;
@@ -470,35 +459,29 @@ namespace DMCConverter
             converted = true;
             imageLoaded = true;
             sourceFile = loadData.sourceFile;
-
             resized = ConvertImg.resizeImage(Image.FromFile(loadData.sourceFile),
                                              loadData.imgWidth,
                                              loadData.imgHeight,
                                              maxSize);
             toConvert = resized;
-
             UserImageBox.Image = resized;
-
             dmcDataStore = loadData.dmcDataStrore;
             rgbArray = loadData.rgbArray;
             rgbArrayToDrawFrom = loadData.rgbArrayToDrawFrom;
             selectedDMCValues = loadData. selectedDMCValues;
             maxSize = loadData.maxSize;
             tickedCount = loadData.tickedCount;
-
             numericUpDown2.Value = loadData.threadAmount;
             threadAmount = loadData.threadAmount;
             numericUpDown3.Value = loadData.imageGridSize;
             numericUpDown1.Value = loadData.imgHeight;
             WidthValue.Value = loadData.imgWidth;
 
-            
-
             Console.WriteLine(loadData.sourceFile);
 
             Invalidate();
-            loading = false;
 
+            loading = false;
         }
 
         private void saveButton_MouseClick(object sender, MouseEventArgs e)
@@ -532,5 +515,4 @@ public class ApplicationData
     public int imageGridSize { get; set; }
     public int imgHeight { get; set; }
     public int imgWidth { get; set; }
-
 }

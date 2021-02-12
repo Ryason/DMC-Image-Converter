@@ -574,7 +574,7 @@
             "White\t\t252\t251\t248"});
             this.dmcPaletteBox.Location = new System.Drawing.Point(12, 25);
             this.dmcPaletteBox.Name = "dmcPaletteBox";
-            this.dmcPaletteBox.Size = new System.Drawing.Size(82, 679);
+            this.dmcPaletteBox.Size = new System.Drawing.Size(82, 664);
             this.dmcPaletteBox.TabIndex = 3;
             this.dmcPaletteBox.SelectedIndexChanged += new System.EventHandler(this.dmcPaletteBox_SelectedIndexChanged);
             // 
@@ -752,7 +752,7 @@
             this.panel1.Controls.Add(this.pictureBox1);
             this.panel1.Location = new System.Drawing.Point(278, 25);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(813, 682);
+            this.panel1.Size = new System.Drawing.Size(813, 673);
             this.panel1.TabIndex = 19;
             // 
             // label3
@@ -856,7 +856,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1103, 726);
+            this.ClientSize = new System.Drawing.Size(1103, 717);
             this.Controls.Add(this.CreatePDF);
             this.Controls.Add(this.loadButton);
             this.Controls.Add(this.saveButton);
