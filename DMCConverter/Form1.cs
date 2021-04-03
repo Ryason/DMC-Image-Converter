@@ -497,7 +497,7 @@ namespace DMCConverter
         private void CreatePDF_Click(object sender, EventArgs e)
         {
             ExportAsPDF export = new ExportAsPDF();
-            export.Create("Converted.png");
+            export.Create(image, dmcDataStore);
         }
     }
 }
