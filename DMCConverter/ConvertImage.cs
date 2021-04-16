@@ -20,7 +20,7 @@ namespace DMCConverter
         /// </summary>
         /// <param name="img">The image the user wants to convert to DMC</param>
         /// <param name="vals"> List of selected DMC values </param>
-        public static Tuple<string[,],Color[,]> processImage(int threadAmount, Image img, List<String> vals, ProgressBar progressBar, Label progressBarText, DataGridView DMCDataGrid, int AlgorithmType, List<String> allDMCValues, CheckedListBox checkBox)
+        public static Tuple<string[,],Color[,]> processImage(int threadAmount, Image img, List<String> vals, ProgressBar progressBar, Label progressBarText, DataGridView DMCDataGrid, int AlgorithmType, List<String> allDMCValues, CheckedListBox checkBox, bool dither)
         {
             progressBar.Value = 0;
             //dictionary for storing pixel values, to determine most frequesnt colours.
@@ -158,11 +158,17 @@ namespace DMCConverter
             counter = 0;
             progressBarText.Text = "Matching Each Pixel To DMC";
             Application.DoEvents();
-            for (int i = 0; i < w; i++)
+
+            //algorithm error values and their xy positions
+            List<Object[]> errorMatrix = new List<Object[]>() { new object[] { 1, 0, 7f/16f},
+                                                                new object[] { -1, 1, 3f/16f},
+                                                                new object[] { 0, 1, 5f/16f},
+                                                                new object[] { 1, 1, 1f/16f}};
+
+            for (int j = 0; j < h; j++)
             {
-                for (int j = 0; j < h; j++)
+                for (int i = 0; i < w; i++)
                 {
-                    
                     foreach (var item in DMCValues)
                     {
                         //Use colorMine library to convert RGB to CIELAB colour space
@@ -178,9 +184,9 @@ namespace DMCConverter
                         int rVal = Convert.ToInt32(splitItem[2]);
                         int gVal = Convert.ToInt32(splitItem[3]);
                         int bVal = Convert.ToInt32(splitItem[4]);
-                        
+
                         Color DMCcolour = Color.FromArgb(rVal, gVal, bVal);
-                        
+
                         //current in-loop pixel rgb value
                         int rImg = convert.GetPixel(i, j).R;
                         int gImg = convert.GetPixel(i, j).G;
@@ -218,7 +224,7 @@ namespace DMCConverter
                         //float match = (float)Math.Sqrt(((rVal - rImg) * (rVal - rImg)) +
                         //                               ((gVal - gImg) * (gVal - gImg)) +
                         //                               ((bVal - bImg) * (bVal - bImg)));
-                        
+
                         //check if current value is close in colour than the previous 
                         if (deltaE < distance)
                         {
@@ -227,8 +233,57 @@ namespace DMCConverter
 
                             //set the corresponding dmc value as the new closest match for the current pixel
                             closestDMC = splitItem[0];
-                            convertedIMG.SetPixel(i, j, Color.FromArgb( rVal, gVal, bVal));
-                            dmcPixelDataArray[j,i] = closestDMC;
+                            convertedIMG.SetPixel(i, j, Color.FromArgb(rVal, gVal, bVal));
+                            dmcPixelDataArray[j, i] = closestDMC;
+                        }
+
+                        //this is where dithering will happen
+                        //currently at the stage of finding the new colour
+                        //next is the error diffusion
+
+                        //calculate difference between old and new rgb values
+                        //using 'convert' and 'convertedIMG' images (before and after)
+                        //modify 'convert' pixels according to their errors
+
+                        if (dither)
+                        {
+                            Color oldPixel = convert.GetPixel(i, j);
+                            Color newPixel = convertedIMG.GetPixel(i, j);
+                            //convert.SetPixel(i, j, newPixel);
+                            //compute errors and set pixels in image accordingly
+                            foreach (var error in errorMatrix)
+                            {
+                                //if not on the image edge
+                                if (i > 0 && i < w-1 && j > 0 && j < h-1)
+                                {
+                                    int x = i + (int)error[0];
+                                    int y = j + (int)error[1];
+                                    float errVal = (float)error[2];
+
+                                    float oldR = oldPixel.R;
+                                    float oldG = oldPixel.G;
+                                    float oldB = oldPixel.B;
+
+                                    float newR = newPixel.R;
+                                    float newG = newPixel.G;
+                                    float newB = newPixel.B;
+
+                                    float errR = oldR - newR;
+                                    float errG = oldG - newG;
+                                    float errB = oldB - newB;
+
+                                    Color xyCol = convert.GetPixel(i + (int)error[0], j + (int)error[1]);
+
+                                    float r = (xyCol.R + errR * (float)error[2]);
+                                    float g = (xyCol.G + errG * (float)error[2]);
+                                    float b = (xyCol.B + errB * (float)error[2]);
+
+                                    //new error diffused colour
+                                    convert.SetPixel(x, y, Color.FromArgb(Clamp(0, 255, (int)r),
+                                                                          Clamp(0, 255, (int)g),
+                                                                          Clamp(0, 255, (int)b)));
+                                }
+                            }
                         }
                     }
 
@@ -240,6 +295,7 @@ namespace DMCConverter
                     distance = 999999999999999;
                 } 
             }
+
 
             //save the created image to the exe directory
             convertedIMG.Save("Converted.png");
@@ -358,17 +414,37 @@ namespace DMCConverter
             //image that we are resizing
             Image imageToResize = img;
 
+            
             //need to cast h and w as floats for division to not give 0 if w is smaller than h
             //calculate aspect ratio and calculate new height from users given width
             float aspectRatio = (float)w / (float)h;
             int resizedHeight = (int)(resizedWidth / aspectRatio);
 
+
+
+            
             //simple way of resizing the image
             //need to look into image resizing methods that include Anti aliasing and other resizing techniques, plus maybe look into upscaling too.
             Image resized = new Bitmap(imageToResize, new Size(resizedWidth, resizedHeight));
 
             //returns the new resized iamge
             return resized;
+        }
+
+        public static int Clamp(int min, int max, int val)
+        {
+            if (val < min)
+            {
+                return min;
+            }
+            if (val > max)
+            {
+                return max;
+            }
+            else
+            {
+                return val;
+            }
         }
     }
 }
