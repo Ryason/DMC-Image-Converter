@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.LoadImageButon = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.UserImageBox = new System.Windows.Forms.PictureBox();
@@ -51,9 +51,11 @@
             this.label4 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.listBox1 = new System.Windows.Forms.ListBox();
             this.label3 = new System.Windows.Forms.Label();
             this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.ditherCheckBox = new System.Windows.Forms.CheckBox();
             this.link = new System.Windows.Forms.LinkLabel();
             this.label5 = new System.Windows.Forms.Label();
             this.ProgressBarText = new System.Windows.Forms.Label();
@@ -61,7 +63,7 @@
             this.saveButton = new System.Windows.Forms.Button();
             this.loadButton = new System.Windows.Forms.Button();
             this.CreatePDF = new System.Windows.Forms.Button();
-            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.ditherFac = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.UserImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.WidthValue)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
@@ -71,6 +73,7 @@
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
             this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ditherFac)).BeginInit();
             this.SuspendLayout();
             // 
             // LoadImageButon
@@ -673,31 +676,31 @@
             // dataGridView1
             // 
             this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.Transparent;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.Red;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.Transparent;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.Red;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle5;
             this.dataGridView1.GridColor = System.Drawing.SystemColors.ButtonFace;
             this.dataGridView1.Location = new System.Drawing.Point(97, 454);
             this.dataGridView1.Name = "dataGridView1";
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.MenuText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.MenuText;
-            this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.MenuText;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.MenuText;
+            this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle6;
             this.dataGridView1.Size = new System.Drawing.Size(175, 148);
             this.dataGridView1.TabIndex = 12;
             this.dataGridView1.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellDoubleClick);
@@ -756,103 +759,6 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(813, 673);
             this.panel1.TabIndex = 19;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(3, 65);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(49, 13);
-            this.label3.TabIndex = 20;
-            this.label3.Text = "Grid Size";
-            // 
-            // numericUpDown3
-            // 
-            this.numericUpDown3.Location = new System.Drawing.Point(129, 63);
-            this.numericUpDown3.Name = "numericUpDown3";
-            this.numericUpDown3.Size = new System.Drawing.Size(42, 20);
-            this.numericUpDown3.TabIndex = 21;
-            this.numericUpDown3.Value = new decimal(new int[] {
-            7,
-            0,
-            0,
-            0});
-            this.numericUpDown3.ValueChanged += new System.EventHandler(this.numericUpDown3_ValueChanged);
-            // 
-            // panel2
-            // 
-            this.panel2.Controls.Add(this.link);
-            this.panel2.Controls.Add(this.WidthLabel);
-            this.panel2.Controls.Add(this.label3);
-            this.panel2.Controls.Add(this.numericUpDown3);
-            this.panel2.Controls.Add(this.AlgorithmType);
-            this.panel2.Controls.Add(this.WidthValue);
-            this.panel2.Controls.Add(this.label4);
-            this.panel2.Controls.Add(this.numericUpDown1);
-            this.panel2.Controls.Add(this.HeightLabel);
-            this.panel2.Controls.Add(this.numericUpDown2);
-            this.panel2.Location = new System.Drawing.Point(97, 198);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(175, 166);
-            this.panel2.TabIndex = 22;
-            // 
-            // link
-            // 
-            this.link.AutoSize = true;
-            this.link.Location = new System.Drawing.Point(3, 119);
-            this.link.Name = "link";
-            this.link.Size = new System.Drawing.Size(97, 13);
-            this.link.TabIndex = 22;
-            this.link.TabStop = true;
-            this.link.Text = "Matching Algorithm";
-            this.link.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.link_LinkClicked);
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(100, 618);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(63, 13);
-            this.label5.TabIndex = 23;
-            this.label5.Text = "grid position";
-            // 
-            // ProgressBarText
-            // 
-            this.ProgressBarText.Location = new System.Drawing.Point(97, 415);
-            this.ProgressBarText.Name = "ProgressBarText";
-            this.ProgressBarText.Size = new System.Drawing.Size(171, 18);
-            this.ProgressBarText.TabIndex = 24;
-            this.ProgressBarText.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // saveButton
-            // 
-            this.saveButton.Location = new System.Drawing.Point(193, 608);
-            this.saveButton.Name = "saveButton";
-            this.saveButton.Size = new System.Drawing.Size(75, 23);
-            this.saveButton.TabIndex = 25;
-            this.saveButton.Text = "Save";
-            this.saveButton.UseVisualStyleBackColor = true;
-            this.saveButton.MouseClick += new System.Windows.Forms.MouseEventHandler(this.saveButton_MouseClick);
-            // 
-            // loadButton
-            // 
-            this.loadButton.Location = new System.Drawing.Point(193, 638);
-            this.loadButton.Name = "loadButton";
-            this.loadButton.Size = new System.Drawing.Size(75, 23);
-            this.loadButton.TabIndex = 26;
-            this.loadButton.Text = "Load";
-            this.loadButton.UseVisualStyleBackColor = true;
-            this.loadButton.Click += new System.EventHandler(this.loadButton_Click);
-            // 
-            // CreatePDF
-            // 
-            this.CreatePDF.Location = new System.Drawing.Point(103, 371);
-            this.CreatePDF.Name = "CreatePDF";
-            this.CreatePDF.Size = new System.Drawing.Size(75, 23);
-            this.CreatePDF.TabIndex = 27;
-            this.CreatePDF.Text = "PDF";
-            this.CreatePDF.UseVisualStyleBackColor = true;
-            this.CreatePDF.Click += new System.EventHandler(this.CreatePDF_Click);
             // 
             // listBox1
             // 
@@ -1114,6 +1020,124 @@
             this.listBox1.TabIndex = 28;
             this.listBox1.Visible = false;
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(3, 65);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(49, 13);
+            this.label3.TabIndex = 20;
+            this.label3.Text = "Grid Size";
+            // 
+            // numericUpDown3
+            // 
+            this.numericUpDown3.Location = new System.Drawing.Point(129, 63);
+            this.numericUpDown3.Name = "numericUpDown3";
+            this.numericUpDown3.Size = new System.Drawing.Size(42, 20);
+            this.numericUpDown3.TabIndex = 21;
+            this.numericUpDown3.Value = new decimal(new int[] {
+            7,
+            0,
+            0,
+            0});
+            this.numericUpDown3.ValueChanged += new System.EventHandler(this.numericUpDown3_ValueChanged);
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.ditherFac);
+            this.panel2.Controls.Add(this.ditherCheckBox);
+            this.panel2.Controls.Add(this.link);
+            this.panel2.Controls.Add(this.WidthLabel);
+            this.panel2.Controls.Add(this.label3);
+            this.panel2.Controls.Add(this.numericUpDown3);
+            this.panel2.Controls.Add(this.AlgorithmType);
+            this.panel2.Controls.Add(this.WidthValue);
+            this.panel2.Controls.Add(this.label4);
+            this.panel2.Controls.Add(this.numericUpDown1);
+            this.panel2.Controls.Add(this.HeightLabel);
+            this.panel2.Controls.Add(this.numericUpDown2);
+            this.panel2.Location = new System.Drawing.Point(97, 198);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(175, 166);
+            this.panel2.TabIndex = 22;
+            // 
+            // ditherCheckBox
+            // 
+            this.ditherCheckBox.AutoSize = true;
+            this.ditherCheckBox.Location = new System.Drawing.Point(6, 146);
+            this.ditherCheckBox.Name = "ditherCheckBox";
+            this.ditherCheckBox.Size = new System.Drawing.Size(54, 17);
+            this.ditherCheckBox.TabIndex = 23;
+            this.ditherCheckBox.Text = "Dither";
+            this.ditherCheckBox.UseVisualStyleBackColor = true;
+            this.ditherCheckBox.CheckedChanged += new System.EventHandler(this.ditherCheckBox_CheckedChanged);
+            // 
+            // link
+            // 
+            this.link.AutoSize = true;
+            this.link.Location = new System.Drawing.Point(3, 119);
+            this.link.Name = "link";
+            this.link.Size = new System.Drawing.Size(97, 13);
+            this.link.TabIndex = 22;
+            this.link.TabStop = true;
+            this.link.Text = "Matching Algorithm";
+            this.link.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.link_LinkClicked);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(100, 618);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(63, 13);
+            this.label5.TabIndex = 23;
+            this.label5.Text = "grid position";
+            // 
+            // ProgressBarText
+            // 
+            this.ProgressBarText.Location = new System.Drawing.Point(97, 415);
+            this.ProgressBarText.Name = "ProgressBarText";
+            this.ProgressBarText.Size = new System.Drawing.Size(171, 18);
+            this.ProgressBarText.TabIndex = 24;
+            this.ProgressBarText.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // saveButton
+            // 
+            this.saveButton.Location = new System.Drawing.Point(193, 608);
+            this.saveButton.Name = "saveButton";
+            this.saveButton.Size = new System.Drawing.Size(75, 23);
+            this.saveButton.TabIndex = 25;
+            this.saveButton.Text = "Save";
+            this.saveButton.UseVisualStyleBackColor = true;
+            this.saveButton.MouseClick += new System.Windows.Forms.MouseEventHandler(this.saveButton_MouseClick);
+            // 
+            // loadButton
+            // 
+            this.loadButton.Location = new System.Drawing.Point(193, 638);
+            this.loadButton.Name = "loadButton";
+            this.loadButton.Size = new System.Drawing.Size(75, 23);
+            this.loadButton.TabIndex = 26;
+            this.loadButton.Text = "Load";
+            this.loadButton.UseVisualStyleBackColor = true;
+            this.loadButton.Click += new System.EventHandler(this.loadButton_Click);
+            // 
+            // CreatePDF
+            // 
+            this.CreatePDF.Location = new System.Drawing.Point(103, 371);
+            this.CreatePDF.Name = "CreatePDF";
+            this.CreatePDF.Size = new System.Drawing.Size(75, 23);
+            this.CreatePDF.TabIndex = 27;
+            this.CreatePDF.Text = "PDF";
+            this.CreatePDF.UseVisualStyleBackColor = true;
+            this.CreatePDF.Click += new System.EventHandler(this.CreatePDF_Click);
+            // 
+            // ditherFac
+            // 
+            this.ditherFac.Location = new System.Drawing.Point(66, 145);
+            this.ditherFac.Name = "ditherFac";
+            this.ditherFac.Size = new System.Drawing.Size(41, 20);
+            this.ditherFac.TabIndex = 24;
+            this.ditherFac.ValueChanged += new System.EventHandler(this.ditherFac_ValueChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1148,6 +1172,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ditherFac)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1185,6 +1210,8 @@
         private System.Windows.Forms.Button loadButton;
         private System.Windows.Forms.Button CreatePDF;
         private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.CheckBox ditherCheckBox;
+        private System.Windows.Forms.NumericUpDown ditherFac;
     }
 }
 

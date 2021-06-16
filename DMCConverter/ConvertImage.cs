@@ -20,7 +20,7 @@ namespace DMCConverter
         /// </summary>
         /// <param name="img">The image the user wants to convert to DMC</param>
         /// <param name="vals"> List of selected DMC values </param>
-        public static Tuple<string[,],Color[,]> processImage(int threadAmount, Image img, List<String> vals, ProgressBar progressBar, Label progressBarText, DataGridView DMCDataGrid, int AlgorithmType, List<String> allDMCValues, CheckedListBox checkBox, bool dither)
+        public static Tuple<string[,],Color[,]> processImage(int threadAmount, Image img, List<String> vals, ProgressBar progressBar, Label progressBarText, DataGridView DMCDataGrid, int AlgorithmType, List<String> allDMCValues, CheckedListBox checkBox, bool dither, int ditherFactor)
         {
             progressBar.Value = 0;
             //dictionary for storing pixel values, to determine most frequesnt colours.
@@ -36,6 +36,8 @@ namespace DMCConverter
             //this will be used when we have a dmc match for each pixel
             //we will assign each pixel the rgb value of its corresponding dmc match
             Bitmap convertedIMG = new Bitmap(image);
+
+            Bitmap ditheredIMG = new Bitmap(image);
 
             //width and height of image we are converting
             //used in looping over each pixel
@@ -94,7 +96,7 @@ namespace DMCConverter
                         Color currentPixel = convert.GetPixel(i, j);
                         String currentDMC = FindClosestDMC(currentPixel, allDMCValues, AlgorithmType);
 
-                        //if current pixel DMC is stored in out colour tracking dictionary, increment its count value by 1
+                        //if current pixel DMC is stored in our colour tracking dictionary, increment its count value by 1
                         if (colourCount.ContainsKey(currentDMC))
                         {
                             colourCount[currentDMC]++;
@@ -131,7 +133,7 @@ namespace DMCConverter
 
                 List<string> mostCommonDMC = new List<string>();
 
-                //find closest matching DMC value for each of the most common colours
+                
                 foreach(var item in commonColours)
                 {
                     mostCommonDMC.Add(item);
@@ -164,6 +166,19 @@ namespace DMCConverter
                                                                 new object[] { -1, 1, 3f/16f},
                                                                 new object[] { 0, 1, 5f/16f},
                                                                 new object[] { 1, 1, 1f/16f}};
+
+            List<Object[]> errorMatrix2 = new List<Object[]>() { new object[] { 1, 0, 7f/48f},
+                                                                 new object[] { 2, 1, 5f/48f},
+                                                                 new object[] { -2, 0, 3f/48f},
+                                                                 new object[] { -1, 1, 5f/48f},
+                                                                 new object[] { 0, 1, 7f/48f},
+                                                                 new object[] { 1, 1, 5f/48f},
+                                                                 new object[] { 2, 1, 3f/48f},
+                                                                 new object[] { -2, 2, 1f/48f},
+                                                                 new object[] { -1, 2, 3f/48f},
+                                                                 new object[] { 0, 2, 5f/48f},
+                                                                 new object[] { 1, 2, 3f/48f},
+                                                                 new object[] { 2, 2, 1f/48f} };
 
             for (int j = 0; j < h; j++)
             {
@@ -199,6 +214,8 @@ namespace DMCConverter
                         //create double for deltaE result
                         double deltaE = 0d;
 
+                        //find closest mathcing dmc value to current pixel in the image that will be converted (convert)
+
                         //set up a switch statement for switching between selected matching algorithm
                         // 0 CIE76
                         // 1 CIE94
@@ -220,11 +237,6 @@ namespace DMCConverter
                                 break;
                         }
 
-                        //use pythagoras to get 'distance' value for the two rgb values
-                        //float match = (float)Math.Sqrt(((rVal - rImg) * (rVal - rImg)) +
-                        //                               ((gVal - gImg) * (gVal - gImg)) +
-                        //                               ((bVal - bImg) * (bVal - bImg)));
-
                         //check if current value is close in colour than the previous 
                         if (deltaE < distance)
                         {
@@ -236,66 +248,74 @@ namespace DMCConverter
                             convertedIMG.SetPixel(i, j, Color.FromArgb(rVal, gVal, bVal));
                             dmcPixelDataArray[j, i] = closestDMC;
                         }
-
-                        //this is where dithering will happen
-                        //currently at the stage of finding the new colour
-                        //next is the error diffusion
-
-                        //calculate difference between old and new rgb values
-                        //using 'convert' and 'convertedIMG' images (before and after)
-                        //modify 'convert' pixels according to their errors
-
-                        if (dither)
+                    }
+                    //if dithering is required, modify convert image with appropriate error
+                    //based on newly matched pixel value
+                    if (dither)
+                    {
+                        Color oldPixel = convert.GetPixel(i, j);
+                        Color newPixel = convertedIMG.GetPixel(i, j);
+                        float factor = (float)ditherFactor * 0.1f;
+                        //convert.SetPixel(i, j, newPixel);
+                        //compute errors and set pixels in image accordingly
+                        foreach (var error in errorMatrix2)
                         {
-                            Color oldPixel = convert.GetPixel(i, j);
-                            Color newPixel = convertedIMG.GetPixel(i, j);
-                            //convert.SetPixel(i, j, newPixel);
-                            //compute errors and set pixels in image accordingly
-                            foreach (var error in errorMatrix)
+                            //if not on the image edge
+                            //normal i > 0 && i < w - 1 && j > 0 && j < h - 1
+                            if (i > 1 && i < w - 2 && j > 1 && j < h - 2)
                             {
-                                //if not on the image edge
-                                if (i > 0 && i < w-1 && j > 0 && j < h-1)
-                                {
-                                    int x = i + (int)error[0];
-                                    int y = j + (int)error[1];
-                                    float errVal = (float)error[2];
+                                int x = i + (int)error[0];
+                                int y = j + (int)error[1];
+                                float errVal = (float)error[2] * factor;
 
-                                    float oldR = oldPixel.R;
-                                    float oldG = oldPixel.G;
-                                    float oldB = oldPixel.B;
+                                float oldR = oldPixel.R;
+                                float oldG = oldPixel.G;
+                                float oldB = oldPixel.B;
 
-                                    float newR = newPixel.R;
-                                    float newG = newPixel.G;
-                                    float newB = newPixel.B;
+                                float newR = newPixel.R;
+                                float newG = newPixel.G;
+                                float newB = newPixel.B;
 
-                                    float errR = oldR - newR;
-                                    float errG = oldG - newG;
-                                    float errB = oldB - newB;
+                                float errR = oldR - newR;
+                                float errG = oldG - newG;
+                                float errB = oldB - newB;
 
-                                    Color xyCol = convert.GetPixel(i + (int)error[0], j + (int)error[1]);
+                                Color xyCol = convert.GetPixel(i + (int)error[0], j + (int)error[1]);
 
-                                    float r = (xyCol.R + errR * (float)error[2]);
-                                    float g = (xyCol.G + errG * (float)error[2]);
-                                    float b = (xyCol.B + errB * (float)error[2]);
+                                float r = (xyCol.R + errR * errVal);
+                                float g = (xyCol.G + errG * errVal);
+                                float b = (xyCol.B + errB * errVal);
 
-                                    //new error diffused colour
-                                    convert.SetPixel(x, y, Color.FromArgb(Clamp(0, 255, (int)r),
-                                                                          Clamp(0, 255, (int)g),
-                                                                          Clamp(0, 255, (int)b)));
-                                }
+                                //new error diffused colour
+                                convert.SetPixel(x, y, Color.FromArgb(Clamp(0, 255, (int)r),
+                                                                      Clamp(0, 255, (int)g),
+                                                                      Clamp(0, 255, (int)b)));
                             }
                         }
                     }
+                    
 
                     //increase the value of the progress bar
                     counter += 1;
                     progressBar.Value = Convert.ToInt32(Math.Round(((float)counter / (float)total)*100f));
 
-                    //again, this float ensures the first comparison will always be stored as the closest matching dmc value
+                    //again, this ensures the first comparison will always be stored as the closest matching dmc value
                     distance = 999999999999999;
                 } 
             }
 
+            //Once image is converted to dmc,
+            //if dithering is required, do it here
+
+
+            //this is where dithering will take place
+            //currently at the stage of finding the new colour
+            //next is the error diffusion
+            //
+            //calculate difference between old and new rgb values
+            //using 'convert' and 'convertedIMG' images (before and after)
+            //modify 'convert' pixels according to their errors
+            
 
             //save the created image to the exe directory
             convertedIMG.Save("Converted.png");
@@ -414,15 +434,11 @@ namespace DMCConverter
             //image that we are resizing
             Image imageToResize = img;
 
-            
             //need to cast h and w as floats for division to not give 0 if w is smaller than h
             //calculate aspect ratio and calculate new height from users given width
             float aspectRatio = (float)w / (float)h;
             int resizedHeight = (int)(resizedWidth / aspectRatio);
 
-
-
-            
             //simple way of resizing the image
             //need to look into image resizing methods that include Anti aliasing and other resizing techniques, plus maybe look into upscaling too.
             Image resized = new Bitmap(imageToResize, new Size(resizedWidth, resizedHeight));
