@@ -22,6 +22,7 @@ namespace DMCConverter
         public bool imageLoaded;
         public bool converted;
         public bool loading = false;
+        public bool dither = false;
 
         public int maxSize;
         public int tickedCount;
@@ -29,6 +30,7 @@ namespace DMCConverter
         public int imageGridSize;
         public int imgHeight;
         public int imgWidth;
+        public int ditherFactor;
 
         public Image image;
         public Image toConvert;
@@ -55,6 +57,7 @@ namespace DMCConverter
             maxSize = 100;
             tickedCount = 0;
             threadAmount = 0;
+            ditherFactor = 10;
 
             InitializeComponent();
 
@@ -177,7 +180,7 @@ namespace DMCConverter
 
             //call the process image method the convert our image to DMC values and display the values on a grid
             //store the returned dmc pixel array and rgbArray to recall them if user accidentally double clicks to mark a grid cell
-            Tuple<string[,],Color[,]> tupleReturn = ConvertImg.processImage(threadAmount, resized, selectedDMCValues, progressBar, ProgressBarText, DMCDataGrid, AlgorithmType.SelectedIndex, allDMCValues, dmcPaletteBox, true);
+            Tuple<string[,],Color[,]> tupleReturn = ConvertImg.processImage(threadAmount, resized, selectedDMCValues, progressBar, ProgressBarText, DMCDataGrid, AlgorithmType.SelectedIndex, allDMCValues, dmcPaletteBox, dither, ditherFactor);
             dmcDataStore = tupleReturn.Item1;
             rgbArray = tupleReturn.Item2;
             rgbArrayToDrawFrom = tupleReturn.Item2;
@@ -219,6 +222,9 @@ namespace DMCConverter
                 {
                     for (int j = 0; j < WidthValue.Value; j++)
                     {
+                        //something goes wrong here when making a second conversion
+                        //it tries access a value out of the array bounds 
+                        //not sure why
                         Brush DMCcolour = new SolidBrush(rgbArrayToDrawFrom[i, j]);
                         //Console.WriteLine(rgbArrayToDrawFrom[0, 0].ToArgb().ToString() + rgbArrayToDrawFrom[i, j].ToArgb().ToString());
 
@@ -498,6 +504,17 @@ namespace DMCConverter
         {
             ExportAsPDF export = new ExportAsPDF();
             export.Create(image, dmcDataStore);
+        }
+
+        private void ditherCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            dither = ditherCheckBox.Checked;
+            Console.WriteLine($"Dithering = {dither}");
+        }
+
+        private void ditherFac_ValueChanged(object sender, EventArgs e)
+        {
+            ditherFactor = (int)ditherFac.Value;
         }
     }
 }
