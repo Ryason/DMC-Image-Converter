@@ -20,7 +20,7 @@ namespace DMCConverter
         /// </summary>
         /// <param name="img">The image the user wants to convert to DMC</param>
         /// <param name="vals"> List of selected DMC values </param>
-        public static Tuple<string[,],Color[,]> processImage(int threadAmount, Image img, List<String> vals, ProgressBar progressBar, Label progressBarText, DataGridView DMCDataGrid, int AlgorithmType, List<String> allDMCValues, CheckedListBox checkBox, bool dither, int ditherFactor)
+        public static Tuple<string[,],Color[,]> processImage(int threadAmount, Image img, List<String> vals, ProgressBar progressBar, Label progressBarText, DataGridView DMCDataGrid, int AlgorithmType, List<String> allDMCValues, CheckedListBox checkBox, bool dither, float ditherFactor)
         {
             progressBar.Value = 0;
             //dictionary for storing pixel values, to determine most frequesnt colours.
@@ -255,7 +255,8 @@ namespace DMCConverter
                     {
                         Color oldPixel = convert.GetPixel(i, j);
                         Color newPixel = convertedIMG.GetPixel(i, j);
-                        float factor = (float)ditherFactor * 0.1f;
+                        float factor = ditherFactor;
+
                         //convert.SetPixel(i, j, newPixel);
                         //compute errors and set pixels in image accordingly
                         foreach (var error in errorMatrix2)
@@ -304,19 +305,6 @@ namespace DMCConverter
                 } 
             }
 
-            //Once image is converted to dmc,
-            //if dithering is required, do it here
-
-
-            //this is where dithering will take place
-            //currently at the stage of finding the new colour
-            //next is the error diffusion
-            //
-            //calculate difference between old and new rgb values
-            //using 'convert' and 'convertedIMG' images (before and after)
-            //modify 'convert' pixels according to their errors
-            
-
             //save the created image to the exe directory
             convertedIMG.Save("Converted.png");
 
@@ -325,7 +313,9 @@ namespace DMCConverter
 
             progressBar.Value = 0;
             progressBarText.Text = "Drawing Converted Image";
+
             Application.DoEvents();
+
             counter = 0;
             for (int i = 0; i < h; i++)
             {
@@ -341,7 +331,6 @@ namespace DMCConverter
                     row.Cells[j].Value = dmcPixelDataArray[i, j];
                     row.Cells[j].Style.BackColor = convertedIMG.GetPixel(j, i);
                     rgbArray[i, j] = convertedIMG.GetPixel(j, i);
-                    
 
                     //increase the value of the progress bar
                     counter += 1;
@@ -367,15 +356,12 @@ namespace DMCConverter
             for (int i = 0; i < DMCValues.Count; i++)
             {
                 string itemString = DMCValues[i];
-
                 string[] item = DMCValues[i].Split('\t');
-
 
                 //current in-loop DMC rgb values
                 int rDMC = Convert.ToInt32(item[2]);
                 int gDMC = Convert.ToInt32(item[3]);
                 int bDMC = Convert.ToInt32(item[4]);
-
                 int r = RGBToDMC.R;
                 int g = RGBToDMC.G;
                 int b = RGBToDMC.B;

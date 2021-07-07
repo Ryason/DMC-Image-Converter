@@ -30,7 +30,7 @@ namespace DMCConverter
         public int imageGridSize;
         public int imgHeight;
         public int imgWidth;
-        public int ditherFactor;
+        public float ditherFactor;
 
         public Image image;
         public Image toConvert;
@@ -57,7 +57,7 @@ namespace DMCConverter
             maxSize = 100;
             tickedCount = 0;
             threadAmount = 0;
-            ditherFactor = 10;
+            ditherFactor = 1;
 
             InitializeComponent();
 
@@ -212,7 +212,7 @@ namespace DMCConverter
             imgHeight = (int)numericUpDown1.Value;
             imgWidth = (int)WidthValue.Value;
 
-            // draw here
+            //draw here
             Bitmap bm = new Bitmap(imgWidth * imageGridSize + 1, imgHeight * imageGridSize + 1);
             Graphics gr = Graphics.FromImage(bm);
 
@@ -224,9 +224,8 @@ namespace DMCConverter
                     {
                         //something goes wrong here when making a second conversion
                         //it tries access a value out of the array bounds 
-                        //not sure why
+                        //not sure why (source of error) maxSize was not being set to the new resized width. was 100 on second conversion
                         Brush DMCcolour = new SolidBrush(rgbArrayToDrawFrom[i, j]);
-                        //Console.WriteLine(rgbArrayToDrawFrom[0, 0].ToArgb().ToString() + rgbArrayToDrawFrom[i, j].ToArgb().ToString());
 
                         gr.FillRectangle(DMCcolour, j * imageGridSize + 1, i * imageGridSize + 1, imageGridSize - 1, imageGridSize - 1);
                     }
@@ -304,11 +303,14 @@ namespace DMCConverter
                     return;
                 }
 
+                //maxSize needs to be set to the new resized with value
+                //if not, upon second conversion attempt it will still be the original width of 100
+                maxSize = Convert.ToInt32(Math.Round(WidthValue.Value, 0));
                 //if image is present, resize it to specified width.
                 resized = ConvertImg.resizeImage(toConvert,
                                                  toConvert.Width,
                                                  toConvert.Height,
-                                                 Convert.ToInt32(Math.Round(WidthValue.Value, 0)));
+                                                 maxSize);
 
                 //store resized image, ready to be colour matched and converted to DMC olny colours
                 UserImageBox.Image = resized;
@@ -514,7 +516,7 @@ namespace DMCConverter
 
         private void ditherFac_ValueChanged(object sender, EventArgs e)
         {
-            ditherFactor = (int)ditherFac.Value;
+            ditherFactor = (float)ditherFac.Value;
         }
     }
 }
