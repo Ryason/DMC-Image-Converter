@@ -199,8 +199,9 @@ namespace DMCConverter
 
             ProgressBarText.Text = "Conversion Complete";
 
-            SaveSession();
-            LoadSession();
+            //Commented out to test if they are causing the out of bounds crash when doing a second conversion
+            //SaveSession();
+            //LoadSession();
         }
 
         protected override void OnPaint(PaintEventArgs e)
