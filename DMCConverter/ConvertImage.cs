@@ -259,7 +259,7 @@ namespace DMCConverter
 
                         //convert.SetPixel(i, j, newPixel);
                         //compute errors and set pixels in image accordingly
-                        foreach (var error in errorMatrix2)
+                        foreach (var error in errorMatrix)
                         {
                             //if not on the image edge
                             //normal i > 0 && i < w - 1 && j > 0 && j < h - 1
