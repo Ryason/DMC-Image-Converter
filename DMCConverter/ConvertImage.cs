@@ -303,8 +303,11 @@ namespace DMCConverter
                         {
                             try
                             {
+                                //replace this with an if to avoid raising lots if exceptions
+                                //check if x and y are in the image, and if i + error / j + error are in the image
                                 int x = i + (int)error[0];
                                 int y = j + (int)error[1];
+                                
                                 float errVal = (float)error[2] * factor;
 
                                 float oldR = oldPixel.R;
