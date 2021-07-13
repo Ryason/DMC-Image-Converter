@@ -20,7 +20,7 @@ namespace DMCConverter
         /// </summary>
         /// <param name="img">The image the user wants to convert to DMC</param>
         /// <param name="vals"> List of selected DMC values </param>
-        public static Tuple<string[,],Color[,]> processImage(int threadAmount, Image img, List<String> vals, ProgressBar progressBar, Label progressBarText, DataGridView DMCDataGrid, int AlgorithmType, List<String> allDMCValues, CheckedListBox checkBox, bool dither, float ditherFactor)
+        public static Tuple<string[,],Color[,]> processImage(int threadAmount, Image img, List<String> vals, ProgressBar progressBar, Label progressBarText, int AlgorithmType, List<String> allDMCValues, CheckedListBox checkBox, bool dither, float ditherFactor, decimal commonColourSensitivity)
         {
             progressBar.Value = 0;
             //dictionary for storing pixel values, to determine most frequesnt colours.
@@ -37,7 +37,7 @@ namespace DMCConverter
             //we will assign each pixel the rgb value of its corresponding dmc match
             Bitmap convertedIMG = new Bitmap(image);
 
-            Bitmap ditheredIMG = new Bitmap(image);
+            
 
             //width and height of image we are converting
             //used in looping over each pixel
@@ -116,7 +116,17 @@ namespace DMCConverter
                 //sort the dictionary by value so most used colours are at the start of the dictionary
                 colourCount =  colourCount.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
 
-                List <String> commonColours = new List<String>();
+                Console.WriteLine($"There are {colourCount.Count} different colours in the original image");
+
+                //#### #### #### #### #### #### #### #### 
+                //here, you could draw all possible colours in an image to display to the user
+                //essentially, remake the image but with all commmon colours next to each other
+                //image can be a factor of the original size, just be dividing the counts of each colour by an amount
+
+
+
+                List<String> commonColours = new List<String>();
+
                 counter = 0;
                 foreach (var item in colourCount.OrderByDescending(x => x.Value))
                 {
@@ -126,14 +136,66 @@ namespace DMCConverter
                     }
                     else
                     {
-                        commonColours.Add(item.Key);
-                        counter++;
+                        // ######  ######  ######  ######  ######  ######  ######  ######  ######  ######  
+                        //check for similar colours when adding a new colour to the list
+                        //need to do this to prevent having too many of a similar colours
+                        //if not, it limits the palette a lot in some images where one or 2 colours dominate
+
+                        if (commonColours.Count > 1)
+                        {
+                            //split each common colour string and convert rgb strings to ints
+                            List<string> colToAdd = item.Key.Split('\t').ToList();
+
+                            //current common colour rgb values
+                            int R = Convert.ToInt32(colToAdd[2]);
+                            int G = Convert.ToInt32(colToAdd[3]);
+                            int B = Convert.ToInt32(colToAdd[4]);
+
+                            bool reject = false;
+
+                            //check all colours in common list, and check if current colour is similar to any of them
+                            foreach (var colour in commonColours)
+                            {
+                                //split each common colour string and convert rgb strings to ints
+                                List<string> col = colour.Split('\t').ToList();
+
+                                //current common colour rgb values
+                                int r = Convert.ToInt32(col[2]);
+                                int g = Convert.ToInt32(col[3]);
+                                int b = Convert.ToInt32(col[4]);
+
+                                Rgb comCol = new Rgb { R = r, G = g, B = b };
+                                Rgb colAdd = new Rgb { R = R, G = G, B = B };
+
+                                double deltaE = DeltaE(comCol, colAdd, AlgorithmType);
+
+                                if (deltaE < (double)commonColourSensitivity )
+                                {
+                                    reject = true;
+                                    Console.WriteLine(deltaE);
+                                }
+                            }
+
+                            if (!reject)
+                            {
+                                commonColours.Add(item.Key);
+                                counter++;
+                            }
+                        }
+                        else
+                        {
+                            commonColours.Add(item.Key);
+                            counter++;
+                        }
+                        
+                        //commonColours.Add(item.Key);
+                        //Console.WriteLine(item.Key);
+                        //counter++;
                     }
                 }
 
                 List<string> mostCommonDMC = new List<string>();
 
-                
                 foreach(var item in commonColours)
                 {
                     mostCommonDMC.Add(item);
@@ -212,30 +274,7 @@ namespace DMCConverter
                         Rgb IMG = new Rgb { R = rImg, G = gImg, B = bImg };
 
                         //create double for deltaE result
-                        double deltaE = 0d;
-
-                        //find closest mathcing dmc value to current pixel in the image that will be converted (convert)
-
-                        //set up a switch statement for switching between selected matching algorithm
-                        // 0 CIE76
-                        // 1 CIE94
-                        // 2 CMC l: C
-                        // 3 CIE2000
-                        switch (AlgorithmType)
-                        {
-                            case 0:
-                                deltaE = DMC.Compare(IMG, new Cie1976Comparison());
-                                break;
-                            case 1:
-                                deltaE = DMC.Compare(IMG, new Cie94Comparison());
-                                break;
-                            case 2:
-                                deltaE = DMC.Compare(IMG, new CmcComparison());
-                                break;
-                            case 3:
-                                deltaE = DMC.Compare(IMG, new CieDe2000Comparison());
-                                break;
-                        }
+                        double deltaE = DeltaE(DMC, IMG, AlgorithmType);
 
                         //check if current value is close in colour than the previous 
                         if (deltaE < distance)
@@ -249,6 +288,7 @@ namespace DMCConverter
                             dmcPixelDataArray[j, i] = closestDMC;
                         }
                     }
+
                     //if dithering is required, modify convert image with appropriate error
                     //based on newly matched pixel value
                     if (dither)
@@ -261,9 +301,7 @@ namespace DMCConverter
                         //compute errors and set pixels in image accordingly
                         foreach (var error in errorMatrix)
                         {
-                            //if not on the image edge
-                            //normal i > 0 && i < w - 1 && j > 0 && j < h - 1
-                            if (i > 1 && i < w - 2 && j > 1 && j < h - 2)
+                            try
                             {
                                 int x = i + (int)error[0];
                                 int y = j + (int)error[1];
@@ -292,6 +330,10 @@ namespace DMCConverter
                                                                       Clamp(0, 255, (int)g),
                                                                       Clamp(0, 255, (int)b)));
                             }
+                            catch (Exception)
+                            {
+                                //out of bounds
+                            }
                         }
                     }
                     
@@ -308,9 +350,7 @@ namespace DMCConverter
             //save the created image to the exe directory
             convertedIMG.Save("Converted.png");
 
-            //set the datagrid width to that of the resized image
-            DMCDataGrid.ColumnCount = w;
-
+            //modify progress bar to show new stage of conversion
             progressBar.Value = 0;
             progressBarText.Text = "Drawing Converted Image";
 
@@ -319,26 +359,14 @@ namespace DMCConverter
             counter = 0;
             for (int i = 0; i < h; i++)
             {
-                //create a new row for each new step in height
-                DataGridViewRow row = new DataGridViewRow();
-                
-                //create cells for the row
-                row.CreateCells(DMCDataGrid);
-
                 for (int j = 0; j < w; j++)
                 {
-                    //populate the row with dmc pixel value data
-                    row.Cells[j].Value = dmcPixelDataArray[i, j];
-                    row.Cells[j].Style.BackColor = convertedIMG.GetPixel(j, i);
                     rgbArray[i, j] = convertedIMG.GetPixel(j, i);
 
                     //increase the value of the progress bar
                     counter += 1;
                     progressBar.Value = Convert.ToInt32(Math.Round(((float)counter / (float)total) * 100f));
                 }
-
-                //add populated row to the datagridview
-                DMCDataGrid.Rows.Add(row);
             }
 
             //God bless this son of a bitch tuple return!!!!!
@@ -370,29 +398,8 @@ namespace DMCConverter
                 Rgb DMC = new Rgb { R = rDMC, G = gDMC, B = bDMC };
                 Rgb rgb = new Rgb { R = r, G = g, B = b };
 
-                //create double for deltaE result
-                double deltaE = 0d;
-
-                //set up a switch statement for switching between selected matching algorithm
-                // 0 CIE76
-                // 1 CIE94
-                // 2 CMC l: C
-                // 3 CIE2000
-                switch (AlgorithmType)
-                {
-                    case 0:
-                        deltaE = DMC.Compare(rgb, new Cie1976Comparison());
-                        break;
-                    case 1:
-                        deltaE = DMC.Compare(rgb, new Cie94Comparison());
-                        break;
-                    case 2:
-                        deltaE = DMC.Compare(rgb, new CmcComparison());
-                        break;
-                    case 3:
-                        deltaE = DMC.Compare(rgb, new CieDe2000Comparison());
-                        break;
-                }
+                //calculate difference between two colours
+                double deltaE = DeltaE(DMC, rgb, AlgorithmType);
 
                 //check if current value is close in colour than the previous 
                 if (deltaE < distance)
@@ -431,6 +438,35 @@ namespace DMCConverter
 
             //returns the new resized iamge
             return resized;
+        }
+
+        public static double DeltaE(Rgb img1, Rgb img2, int algorithm)
+        {
+            //create double for deltaE result
+            double deltaE = 0d;
+
+            //Set up a switch statement for switching between selected matching algorithm
+            // 0 CIE76
+            // 1 CIE94
+            // 2 CMC l: C
+            // 3 CIE2000
+            switch (algorithm)
+            {
+                case 0:
+                    deltaE = img1.Compare(img2, new Cie1976Comparison());
+                    break;
+                case 1:
+                    deltaE = img1.Compare(img2, new Cie94Comparison());
+                    break;
+                case 2:
+                    deltaE = img1.Compare(img2, new CmcComparison());
+                    break;
+                case 3:
+                    deltaE = img1.Compare(img2, new CieDe2000Comparison());
+                    break;
+            }
+
+            return deltaE;
         }
 
         public static int Clamp(int min, int max, int val)
