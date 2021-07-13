@@ -308,8 +308,6 @@ namespace DMCConverter
             }
         }
 
-        
-
         /// <summary>
         /// stores the value of threadAmount
         /// </summary>
