@@ -42,7 +42,7 @@ namespace DMCConverter
         public List<string> allDMCValues;
         public List<string> selectedDMCValues;
 
-        public DataGridView DMCDataGrid;
+
 
         public string sourceFile;
         public string[,] dmcDataStore;
@@ -62,7 +62,7 @@ namespace DMCConverter
             InitializeComponent();
 
             paletteCount.Text = "Palette Count\n0 / " + dmcPaletteBox.Items.Count.ToString();
-            DMCDataGrid = dataGridView1;
+            
             //my attepmt at enabling doublebuffering, to speed up the datagridview scrolling/rendering slowness.
             //mostly coppied code form stack overflow and an article on 10tec.com that explains the issue and gives some workaround code.
             EnableDoubleBuffering();
@@ -165,11 +165,7 @@ namespace DMCConverter
                 return;
             }
 
-            //if user converts a second image, we have to clear the data from the first conversion
-            if (DMCDataGrid.RowCount > 0 )
-            {
-                DMCDataGrid.Rows.Clear();
-            }
+            
 
             //if threadAmount is greater than 0, the user wants to auto generate the best matching DMC colours
             //throw out the selected DMC values, and make a new empty list to store the auto generated DMC colours in.
@@ -179,8 +175,8 @@ namespace DMCConverter
             }
 
             //call the process image method the convert our image to DMC values and display the values on a grid
-            //store the returned dmc pixel array and rgbArray to recall them if user accidentally double clicks to mark a grid cell
-            Tuple<string[,],Color[,]> tupleReturn = ConvertImg.processImage(threadAmount, resized, selectedDMCValues, progressBar, ProgressBarText, DMCDataGrid, AlgorithmType.SelectedIndex, allDMCValues, dmcPaletteBox, dither, ditherFactor);
+            //store the returned dmc pixel array and rgbArray to recall them if user accidentally marks the wrong grid cell
+            Tuple<string[,],Color[,]> tupleReturn = ConvertImg.processImage(threadAmount, resized, selectedDMCValues, progressBar, ProgressBarText, AlgorithmType.SelectedIndex, allDMCValues, dmcPaletteBox, dither, ditherFactor, commonColourSensitivity.Value);
             dmcDataStore = tupleReturn.Item1;
             rgbArray = tupleReturn.Item2;
             rgbArrayToDrawFrom = tupleReturn.Item2;
@@ -199,7 +195,7 @@ namespace DMCConverter
 
             ProgressBarText.Text = "Conversion Complete";
 
-            //Commented out to test if they are causing the out of bounds crash when doing a second conversion
+            //Commented out to test if this is causing the out of bounds crash when doing a second conversion
             //SaveSession();
             //LoadSession();
         }
@@ -223,9 +219,6 @@ namespace DMCConverter
                 {
                     for (int j = 0; j < WidthValue.Value; j++)
                     {
-                        //something goes wrong here when making a second conversion
-                        //it tries access a value out of the array bounds 
-                        //not sure why (source of error) maxSize was not being set to the new resized width. was 100 on second conversion
                         Brush DMCcolour = new SolidBrush(rgbArrayToDrawFrom[i, j]);
 
                         gr.FillRectangle(DMCcolour, j * imageGridSize + 1, i * imageGridSize + 1, imageGridSize - 1, imageGridSize - 1);
@@ -278,14 +271,7 @@ namespace DMCConverter
                           true);
             this.UpdateStyles();
 
-            //from the explanations at https://10tec.com/articles/why-datagridview-slow.aspx
-            if (!SystemInformation.TerminalServerSession)
-            {
-                Type dgvType = dataGridView1.GetType();
-                PropertyInfo pi = dgvType.GetProperty("DoubleBuffered",
-                  BindingFlags.Instance | BindingFlags.NonPublic);
-                pi.SetValue(dataGridView1, true, null);
-            }
+            
         }
 
         /// <summary>
@@ -322,35 +308,7 @@ namespace DMCConverter
             }
         }
 
-        /// <summary>
-        /// Makes a cell on the grid red when the user double clicks. 
-        /// If marked by mistake the user can double click the cell again.
-        /// This reverts the cell's background from red to the previous colour and restores the DMC value text to the cell
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            //if the cell is empty, i.e. if the user has double clicked and marked it red
-            if ((string)dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value == "")
-            {
-                //set the text value of the cell to be that of the DMC colour name for this cell's colour.
-                dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = dmcDataStore[e.RowIndex, e.ColumnIndex];
-
-                //set the background of the cell to the corresponding rgb colour for this cell's DMC value
-                dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = rgbArray[e.RowIndex, e.ColumnIndex];
-            }
-            else
-            {
-                //else, if the cell is not red, make the background of the cell red
-                DataGridViewCellStyle cellStyle = new DataGridViewCellStyle();
-                cellStyle.BackColor = Color.Red;
-
-                //and remove the DMC value text
-                dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Style = cellStyle;
-                dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = "";
-            }
-        }
+        
 
         /// <summary>
         /// stores the value of threadAmount

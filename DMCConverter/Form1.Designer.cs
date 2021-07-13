@@ -29,9 +29,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.LoadImageButon = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.UserImageBox = new System.Windows.Forms.PictureBox();
@@ -45,16 +42,15 @@
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.HeightLabel = new System.Windows.Forms.Label();
             this.progressBar = new System.Windows.Forms.ProgressBar();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.AlgorithmType = new System.Windows.Forms.ComboBox();
             this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.listBox1 = new System.Windows.Forms.ListBox();
             this.label3 = new System.Windows.Forms.Label();
             this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.commonColourSensitivity = new System.Windows.Forms.NumericUpDown();
             this.ditherFac = new System.Windows.Forms.NumericUpDown();
             this.ditherCheckBox = new System.Windows.Forms.CheckBox();
             this.link = new System.Windows.Forms.LinkLabel();
@@ -67,12 +63,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.UserImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.WidthValue)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
             this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.commonColourSensitivity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ditherFac)).BeginInit();
             this.SuspendLayout();
             // 
@@ -673,38 +669,6 @@
             this.progressBar.Size = new System.Drawing.Size(74, 13);
             this.progressBar.TabIndex = 11;
             // 
-            // dataGridView1
-            // 
-            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.Transparent;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.Red;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
-            this.dataGridView1.GridColor = System.Drawing.SystemColors.ButtonFace;
-            this.dataGridView1.Location = new System.Drawing.Point(97, 454);
-            this.dataGridView1.Name = "dataGridView1";
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.MenuText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.MenuText;
-            this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle3;
-            this.dataGridView1.Size = new System.Drawing.Size(175, 148);
-            this.dataGridView1.TabIndex = 12;
-            this.dataGridView1.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellDoubleClick);
-            // 
             // AlgorithmType
             // 
             this.AlgorithmType.FormattingEnabled = true;
@@ -753,272 +717,11 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.AutoScroll = true;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Controls.Add(this.listBox1);
             this.panel1.Controls.Add(this.pictureBox1);
             this.panel1.Location = new System.Drawing.Point(278, 25);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(813, 673);
             this.panel1.TabIndex = 19;
-            // 
-            // listBox1
-            // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.Items.AddRange(new object[] {
-            "☁",
-            "☂",
-            "☃",
-            "☄",
-            "★",
-            "☆",
-            "☇",
-            "☈",
-            "☉",
-            "☊",
-            "☋",
-            "☌",
-            "☍",
-            "☎",
-            "☏",
-            "☐",
-            "☑",
-            "☒",
-            "☓",
-            "☔",
-            "☕",
-            "☖",
-            "☗",
-            "",
-            "☘",
-            "☙",
-            "☚",
-            "☛",
-            "☜",
-            "☝",
-            "☞",
-            "☟",
-            "☠",
-            "☡",
-            "☢",
-            "☣",
-            "☤",
-            "☥",
-            "☦",
-            "☧",
-            "☨",
-            "☩",
-            "☪",
-            "☫",
-            "☬",
-            "☭",
-            "☮",
-            "☯",
-            "☰",
-            "☱",
-            "☲",
-            "☳",
-            "☴",
-            "☵",
-            "☶",
-            "☷",
-            "☸",
-            "☹",
-            "☺",
-            "☻",
-            "☼",
-            "☽",
-            "☾",
-            "☿",
-            "♀",
-            "♁",
-            "♂",
-            "♃",
-            "♄",
-            "♅",
-            "♆",
-            "♇",
-            "♈",
-            "♉",
-            "♊",
-            "♋",
-            "♌",
-            "♍",
-            "♎",
-            "♏",
-            "♐",
-            "♑",
-            "♒",
-            "♓",
-            "♔",
-            "♕",
-            "♖",
-            "♗",
-            "♘",
-            "♙",
-            "♚",
-            "♛",
-            "♜",
-            "♝",
-            "♞",
-            "♟",
-            "♠",
-            "♡",
-            "♢",
-            "♣",
-            "♤",
-            "♥",
-            "♦",
-            "♧",
-            "♨",
-            "♩",
-            "♪",
-            "♫",
-            "♬",
-            "♭",
-            "♮",
-            "♯",
-            "♰",
-            "♱",
-            "♲",
-            "♳",
-            "♴",
-            "♵",
-            "♶",
-            "♷",
-            "♸",
-            "♹",
-            "♺",
-            "♻",
-            "♼",
-            "♽",
-            "♾",
-            "♿",
-            "⚀",
-            "⚁",
-            "⚂",
-            "⚃",
-            "⚄",
-            "⚅",
-            "⚆",
-            "⚇",
-            "⚈",
-            "⚉",
-            "⚊",
-            "⚋",
-            "⚌",
-            "⚍",
-            "⚎",
-            "⚏",
-            "⚐",
-            "⚑",
-            "⚒",
-            "⚓",
-            "⚔",
-            "⚕",
-            "⚖",
-            "⚗",
-            "⚘",
-            "⚙",
-            "⚚",
-            "⚛",
-            "⚜",
-            "⚝",
-            "⚞",
-            "⚟",
-            "⚠",
-            "⚡",
-            "⚢",
-            "⚣",
-            "⚤",
-            "⚥",
-            "⚦",
-            "⚧",
-            "⚨",
-            "⚩",
-            "⚪",
-            "⚫",
-            "⚬",
-            "⚭",
-            "⚮",
-            "⚯",
-            "⚰",
-            "⚱",
-            "⚲",
-            "⚳",
-            "⚴",
-            "⚵",
-            "⚶",
-            "⚷",
-            "⚸",
-            "⚹",
-            "⚺",
-            "⚻",
-            "⚼",
-            "⚽",
-            "⚾",
-            "⚿",
-            "⛁",
-            "⛂",
-            "⛃",
-            "⛄",
-            "⛅",
-            "⛆",
-            "⛇",
-            "⛈",
-            "⛉",
-            "⛊",
-            "⛋",
-            "⛍",
-            "⛎",
-            "⛏",
-            "⛐",
-            "⛑",
-            "⛒",
-            "⛓",
-            "⛔",
-            "⛕",
-            "⛖",
-            "⛗",
-            "⛙",
-            "⛚",
-            "⛛",
-            "⛜",
-            "⛝",
-            "⛞",
-            "⛟",
-            "⛠",
-            "⛡",
-            "⛢",
-            "⛣",
-            "⛥",
-            "⛦",
-            "⛧",
-            "⛨",
-            "⛩",
-            "⛪",
-            "⛫",
-            "⛬",
-            "⛭",
-            "⛮",
-            "⛯",
-            "⛱",
-            "⛲",
-            "⛳",
-            "⛴",
-            "⛵",
-            "⛶",
-            "⛷",
-            "⛸",
-            "⛹",
-            "⛺",
-            "⛻",
-            "⛽",
-            "⛾",
-            "⛿"});
-            this.listBox1.Location = new System.Drawing.Point(724, 612);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(60, 43);
-            this.listBox1.TabIndex = 28;
-            this.listBox1.Visible = false;
             // 
             // label3
             // 
@@ -1044,6 +747,7 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.commonColourSensitivity);
             this.panel2.Controls.Add(this.ditherFac);
             this.panel2.Controls.Add(this.ditherCheckBox);
             this.panel2.Controls.Add(this.link);
@@ -1060,6 +764,23 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(175, 166);
             this.panel2.TabIndex = 22;
+            // 
+            // commonColourSensitivity
+            // 
+            this.commonColourSensitivity.Location = new System.Drawing.Point(113, 145);
+            this.commonColourSensitivity.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.commonColourSensitivity.Name = "commonColourSensitivity";
+            this.commonColourSensitivity.Size = new System.Drawing.Size(41, 20);
+            this.commonColourSensitivity.TabIndex = 25;
+            this.commonColourSensitivity.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // ditherFac
             // 
@@ -1166,7 +887,6 @@
             this.Controls.Add(this.label5);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.ConvertButton);
             this.Controls.Add(this.label1);
@@ -1181,13 +901,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.UserImageBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.WidthValue)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.commonColourSensitivity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ditherFac)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -1209,7 +929,6 @@
         private System.Windows.Forms.NumericUpDown numericUpDown1;
         private System.Windows.Forms.Label HeightLabel;
         public System.Windows.Forms.ProgressBar progressBar;
-        private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.ComboBox AlgorithmType;
         private System.Windows.Forms.NumericUpDown numericUpDown2;
         private System.Windows.Forms.Label label4;
@@ -1225,9 +944,9 @@
         private System.Windows.Forms.Button saveButton;
         private System.Windows.Forms.Button loadButton;
         private System.Windows.Forms.Button CreatePDF;
-        private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.CheckBox ditherCheckBox;
         private System.Windows.Forms.NumericUpDown ditherFac;
+        private System.Windows.Forms.NumericUpDown commonColourSensitivity;
     }
 }
 
