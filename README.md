@@ -32,6 +32,29 @@ DMC Image Converter is a tool used to create cross stitch patterns from images.
 - You can right click any grid cell to mark it red when you have stitched it (currently can't unmark).
 - Using the Save and Load buttons, you can save a pattern for loading if you need to close the program.
 ---
+### About colour matching
+The auto match colour feature gives the ability to generate a pallete of DMC thread colours using the colours that make up the original image.
+
+When using this you must trial different values of "colour uniqueness". This value determines how similar the auto matched colours are allowed to be. The larger the value, the more unique the colour palette becomes.
+
+This was implemented when realising that the first implementation only selected the top x amount of common colours. Which was an issue, as it severely reduced how varied the shades of colours in the palette was. For example, if converting an image of a large green field with a small amout of red flowers. The auto matched colours would include mostly greens, as this is the shade of colour that dominates the image. The palette would likely not have a shade of red, and the flowers would match to the closest possible colour (probably a shade of green).
+
+The following figures show how the colour uniqueness of the auto matched thread colours effects the outcome of a conversion.
+
+<pre>Uniqueness of 1                                                 Uniqueness of 5</pre>
+
+<img src="./Images/uniqueness1.PNG" width="480" alt="Uniqueness of 1"> <img src="./Images/uniqueness5.PNG" width="480" alt="Uniqueness of 5">
+
+<pre>Uniqueness of 9                                                 Uniqueness of 14</pre>
+
+<img src="./Images/uniqueness9.PNG" width="480" alt="Uniqueness of 9"> <img src="./Images/uniqueness14.PNG" width="480" alt="Uniqueness of 14">
+
+As shown, a default setting of 1 does not match some of the colours that only appear in small amounts. However, these colours that don't appear much are actually quite important in getting a decent conversion. As without them you lose a lot of the look that the original image had.
+
+You also have to be cautious of setting the value too high. As doing so can result in too large of a similarity gap, resulting in not being able to find enough dissimilar colours in the original image. You can see this in the last of the 4 images above. The uniqueness value is set to 14 and you can see, in the bottom left, that the palette count is only 8/454. Despite telling the program to match 15 colours. There are simply not enough unique colours in the image to comply with the set uniqueness value.
+
+---
+
 ### Features I Would Like To Add
 - Save and load previous conversions. As well as saving and loading of marked grid cells, to keep a users stitching progress.
 - Bigger floss selection. Such as brands of floss other than DMC.
