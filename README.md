@@ -51,7 +51,7 @@ The following figures show how the colour uniqueness of the auto matched thread 
 
 As shown, a default setting of 1 does not match some of the colours that only appear in small amounts. However, these colours that don't appear much are actually quite important in getting a decent conversion. As without them you lose a lot of the look that the original image had.
 
-You also have to be cautious of setting the value too high. As doing so can result in too large of a similarity gap, resulting in not being able to find enough dissimilar colours in the original image. You can see this in the last of the 4 images above. The uniqueness value is set to 14 and you can see, in the bottom left, that the palette count is only 8/454. Despite telling the program to match 15 colours. There are simply not enough unique colours in the image to comply with the set uniqueness value. Meaning the value needs to be reduced in order to get the desired number of matched colours.
+You also have to be cautious of setting the value too high. As doing so can result in too large of a similarity gap, resulting in not being able to find enough dissimilar colours in the original image. You can see this in the last of the 4 images above. If you maximize the image, you will see that the uniqueness value is set to 14, and in the bottom left, the palette count is only 8/454. Despite telling the program to match 15 colours. There are simply not enough unique colours in the image to comply with the set uniqueness value. Meaning the value needs to be reduced in order to get the desired number of matched colours.
 
 ---
 
