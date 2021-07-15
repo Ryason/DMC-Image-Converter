@@ -9,16 +9,16 @@ DMC Image Converter is a tool used to create cross stitch patterns from images.
 - Automatic selection of best DMC threads to use, as well as user specified.
 - Resize a loaded image to a set width.
 - Display grid showing DMC values, representing the converted pixels of the loaded image.
+- Grid Marking to track your stitching progress.
 - Select between different colour matching algorithms. Each gives a slightly different result. With the closeest current algorithm being [CIE2000](https://en.wikipedia.org/wiki/Color_difference#CIELAB_%CE%94E*). Although the closest mathematically, you may want to play around with what the other versions produce.
 - [Dithering](https://en.wikipedia.org/wiki/Dither) (reduces colour banding caused by a reduced colour palette)
 - Basic PDF export (still in development)
+- Save and load a conversion, along with marked stitches.
 ---
 ### Currently Working On
-- Dithering
-- Better auto colour matching (needs to be better at selecting colours. Just picking the most common is not good enough, as it potentially disregards low count colours that are important for the overall image).
+- Auto Save
 - Load/save feature. Allowing the user to make a conversion, save it, and then re-load it the next time the launch the program. Without having to convert it again.
 - Ability to draw your own pattern, or edit a conversion, using any DMC colour the user wants to (paint).
-- Marking function, so the user can mark stitches on the grid that have been stiched.
 - Figuring out the best way to save the conversion to either an image or pdf, for use away from the program.
 - Re-arranging the ui and improving the overall look.
 ---
