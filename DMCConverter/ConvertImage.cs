@@ -289,25 +289,27 @@ namespace DMCConverter
                         }
                     }
 
-                    //if dithering is required, modify convert image with appropriate error
-                    //based on newly matched pixel value
+                    //Implementation of the psuedocode Floyd-Stienberg dithering algorithm found here,
+                    //https://en.wikipedia.org/wiki/Floyd%E2%80%93Steinberg_dithering
                     if (dither)
                     {
                         Color oldPixel = convert.GetPixel(i, j);
                         Color newPixel = convertedIMG.GetPixel(i, j);
                         float factor = ditherFactor;
 
-                        //convert.SetPixel(i, j, newPixel);
-                        //compute errors and set pixels in image accordingly
+                        //compute errors for each matrix position relative to the current pixel
+                        //and set pixels in image accordingly
                         foreach (var error in errorMatrix)
                         {
-                            try
+                            //x y image co-ordinate that the current element of the error matrix is acting on
+                            //found using current i j pixel co-ord, plus the error element index as an offset
+                            int x = i + (int)error[0];
+                            int y = j + (int)error[1];
+                            
+                            //check error matric element isnt acting outside the bounds of the image array
+                            if (x >= 0 && x < w && y >= 0 && y < h)
                             {
-                                //replace this with an if to avoid raising lots if exceptions
-                                //check if x and y are in the image, and if i + error / j + error are in the image
-                                int x = i + (int)error[0];
-                                int y = j + (int)error[1];
-                                
+
                                 float errVal = (float)error[2] * factor;
 
                                 float oldR = oldPixel.R;
@@ -322,7 +324,7 @@ namespace DMCConverter
                                 float errG = oldG - newG;
                                 float errB = oldB - newB;
 
-                                Color xyCol = convert.GetPixel(i + (int)error[0], j + (int)error[1]);
+                                Color xyCol = convert.GetPixel(x, y);
 
                                 float r = (xyCol.R + errR * errVal);
                                 float g = (xyCol.G + errG * errVal);
@@ -332,14 +334,9 @@ namespace DMCConverter
                                 convert.SetPixel(x, y, Color.FromArgb(Clamp(0, 255, (int)r),
                                                                       Clamp(0, 255, (int)g),
                                                                       Clamp(0, 255, (int)b)));
-                            }
-                            catch (Exception)
-                            {
-                                //out of bounds
-                            }
+                            }                            
                         }
                     }
-                    
 
                     //increase the value of the progress bar
                     counter += 1;
