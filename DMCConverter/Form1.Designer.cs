@@ -60,6 +60,8 @@
             this.saveButton = new System.Windows.Forms.Button();
             this.loadButton = new System.Windows.Forms.Button();
             this.CreatePDF = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.UserImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.WidthValue)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
@@ -600,7 +602,7 @@
             // 
             // ConvertButton
             // 
-            this.ConvertButton.Location = new System.Drawing.Point(193, 370);
+            this.ConvertButton.Location = new System.Drawing.Point(193, 410);
             this.ConvertButton.Name = "ConvertButton";
             this.ConvertButton.Size = new System.Drawing.Size(75, 23);
             this.ConvertButton.TabIndex = 6;
@@ -664,7 +666,7 @@
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(193, 399);
+            this.progressBar.Location = new System.Drawing.Point(193, 439);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(74, 13);
             this.progressBar.TabIndex = 11;
@@ -677,7 +679,7 @@
             "CIE94",
             "CMC l:C",
             "CIE2000"});
-            this.AlgorithmType.Location = new System.Drawing.Point(106, 115);
+            this.AlgorithmType.Location = new System.Drawing.Point(107, 140);
             this.AlgorithmType.Name = "AlgorithmType";
             this.AlgorithmType.Size = new System.Drawing.Size(65, 21);
             this.AlgorithmType.TabIndex = 13;
@@ -747,6 +749,8 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.label6);
+            this.panel2.Controls.Add(this.label2);
             this.panel2.Controls.Add(this.commonColourSensitivity);
             this.panel2.Controls.Add(this.ditherFac);
             this.panel2.Controls.Add(this.ditherCheckBox);
@@ -762,19 +766,19 @@
             this.panel2.Controls.Add(this.numericUpDown2);
             this.panel2.Location = new System.Drawing.Point(97, 198);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(175, 166);
+            this.panel2.Size = new System.Drawing.Size(175, 206);
             this.panel2.TabIndex = 22;
             // 
             // commonColourSensitivity
             // 
-            this.commonColourSensitivity.Location = new System.Drawing.Point(113, 145);
+            this.commonColourSensitivity.Location = new System.Drawing.Point(129, 115);
             this.commonColourSensitivity.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
             this.commonColourSensitivity.Name = "commonColourSensitivity";
-            this.commonColourSensitivity.Size = new System.Drawing.Size(41, 20);
+            this.commonColourSensitivity.Size = new System.Drawing.Size(42, 20);
             this.commonColourSensitivity.TabIndex = 25;
             this.commonColourSensitivity.Value = new decimal(new int[] {
             1,
@@ -790,7 +794,7 @@
             0,
             0,
             65536});
-            this.ditherFac.Location = new System.Drawing.Point(66, 145);
+            this.ditherFac.Location = new System.Drawing.Point(131, 167);
             this.ditherFac.Minimum = new decimal(new int[] {
             1,
             0,
@@ -809,7 +813,7 @@
             // ditherCheckBox
             // 
             this.ditherCheckBox.AutoSize = true;
-            this.ditherCheckBox.Location = new System.Drawing.Point(6, 146);
+            this.ditherCheckBox.Location = new System.Drawing.Point(6, 168);
             this.ditherCheckBox.Name = "ditherCheckBox";
             this.ditherCheckBox.Size = new System.Drawing.Size(54, 17);
             this.ditherCheckBox.TabIndex = 23;
@@ -820,7 +824,7 @@
             // link
             // 
             this.link.AutoSize = true;
-            this.link.Location = new System.Drawing.Point(3, 119);
+            this.link.Location = new System.Drawing.Point(3, 143);
             this.link.Name = "link";
             this.link.Size = new System.Drawing.Size(97, 13);
             this.link.TabIndex = 22;
@@ -839,7 +843,7 @@
             // 
             // ProgressBarText
             // 
-            this.ProgressBarText.Location = new System.Drawing.Point(97, 415);
+            this.ProgressBarText.Location = new System.Drawing.Point(97, 455);
             this.ProgressBarText.Name = "ProgressBarText";
             this.ProgressBarText.Size = new System.Drawing.Size(171, 18);
             this.ProgressBarText.TabIndex = 24;
@@ -867,13 +871,31 @@
             // 
             // CreatePDF
             // 
-            this.CreatePDF.Location = new System.Drawing.Point(103, 371);
+            this.CreatePDF.Location = new System.Drawing.Point(103, 411);
             this.CreatePDF.Name = "CreatePDF";
             this.CreatePDF.Size = new System.Drawing.Size(75, 23);
             this.CreatePDF.TabIndex = 27;
             this.CreatePDF.Text = "PDF";
             this.CreatePDF.UseVisualStyleBackColor = true;
             this.CreatePDF.Click += new System.EventHandler(this.CreatePDF_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(3, 117);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(121, 13);
+            this.label2.TabIndex = 26;
+            this.label2.Text = "Auto Colour Uniqueness";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(78, 169);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(47, 13);
+            this.label6.TabIndex = 27;
+            this.label6.Text = "Strength";
             // 
             // Form1
             // 
@@ -947,6 +969,8 @@
         private System.Windows.Forms.CheckBox ditherCheckBox;
         private System.Windows.Forms.NumericUpDown ditherFac;
         private System.Windows.Forms.NumericUpDown commonColourSensitivity;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label2;
     }
 }
 

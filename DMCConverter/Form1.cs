@@ -42,8 +42,6 @@ namespace DMCConverter
         public List<string> allDMCValues;
         public List<string> selectedDMCValues;
 
-
-
         public string sourceFile;
         public string[,] dmcDataStore;
 
@@ -165,8 +163,6 @@ namespace DMCConverter
                 return;
             }
 
-            
-
             //if threadAmount is greater than 0, the user wants to auto generate the best matching DMC colours
             //throw out the selected DMC values, and make a new empty list to store the auto generated DMC colours in.
             if (threadAmount > 0)
@@ -189,7 +185,7 @@ namespace DMCConverter
             //this is here to prevent drawing the grid colors, before the grid colours have been established
             //DrawImage function checks for this
             converted = true;
-
+            selectedDMCValues = new List<String>(dmcPaletteBox.CheckedItems.Cast<String>());
             //re-draw the graphics to update changes made
             Invalidate();
 
@@ -433,7 +429,7 @@ namespace DMCConverter
             dmcDataStore = loadData.dmcDataStrore;
             rgbArray = loadData.rgbArray;
             rgbArrayToDrawFrom = loadData.rgbArrayToDrawFrom;
-            selectedDMCValues = loadData. selectedDMCValues;
+            selectedDMCValues = loadData.selectedDMCValues;
             maxSize = loadData.maxSize;
             tickedCount = loadData.tickedCount;
             numericUpDown2.Value = loadData.threadAmount;
@@ -462,7 +458,7 @@ namespace DMCConverter
         private void CreatePDF_Click(object sender, EventArgs e)
         {
             ExportAsPDF export = new ExportAsPDF();
-            export.Create(image, dmcDataStore);
+            export.Create(image, dmcDataStore, selectedDMCValues);
         }
 
         private void ditherCheckBox_CheckedChanged(object sender, EventArgs e)

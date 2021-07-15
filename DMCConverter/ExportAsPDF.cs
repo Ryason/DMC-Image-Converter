@@ -10,13 +10,12 @@ namespace DMCConverter
 {
     public class ExportAsPDF
     {
-        public void Create(Image image, string[,] dmcGrid)
+        public void Create(Image image, string[,] dmcGrid, List<string> selectedDMCValues)
         {
             Dictionary<string, string> dmcToShortText = new Dictionary<string, string>();
+            Dictionary<string, Color> dmcValues = new Dictionary<string, Color>();
 
             PdfDocument document = new PdfDocument();
-
-
 
             //Create multiple pages to fit an entire conversion prjoect on
             ///first need to break up the image, using the DMCgridarray's width and height.
@@ -85,6 +84,18 @@ namespace DMCConverter
             }
             #endregion
 
+            #region Create dmcValue dictionaryto hold dmc id and colour data
+            foreach (var item in selectedDMCValues)
+            {
+                string[] dmcString = item.Split('\t');
+                Color col = Color.FromArgb(Convert.ToInt32(dmcString[2]),
+                                           Convert.ToInt32(dmcString[3]),
+                                           Convert.ToInt32(dmcString[4]));
+                dmcValues.Add(dmcString[0], col);
+
+            }
+            #endregion
+
             #region This is where the drawing happens
             //This needs to be done for each page
             //Starting with the first, as it is different every time.
@@ -113,6 +124,7 @@ namespace DMCConverter
             {
                 image = ConvertImg.resizeImage(image, image.Width, image.Height, 765/2);
             }
+
             image.Save(strm, System.Drawing.Imaging.ImageFormat.Png);
             XImage img = XImage.FromStream(strm);
 
@@ -138,14 +150,16 @@ namespace DMCConverter
             {
                 string keyString = $"{dmcToShortText[item]} = {item}";
                 gfx.DrawString(keyString, font, brush, startX, (count * lineSpace) + startY - 50);
+
+                //draw a square next to each string showing its thread colour (needs converted colour data)
+                XPen dmcCol = new XPen(XColor.FromArgb(dmcValues[item].ToArgb()), 6);
+                gfx.DrawRectangle(dmcCol, new XRect(new XPoint(startX + 60, (count * lineSpace) + startY - 56), new XSize(5,5)));
                 count++;
             }
             #endregion End of page one region
 
             #region Pages with chart
-            //add second page for testing
             //This is where the grid will be broken down to make it readable across multiple pages.
-
 
             //These 2 variables determine how many cells there are (width and height)
             //currently it is the maximum, but i should be able to set it to say 30 and 30,
@@ -153,7 +167,7 @@ namespace DMCConverter
             int h = 30;
             int w = 30;
 
-            //first, break down the grid into 30 by 30 chunks.
+            //first, break down the grid into h by w chunks.
             //store chunk start positions in a list
             List<int[]> chunks = new List<int[]>();
 
@@ -200,18 +214,19 @@ namespace DMCConverter
                         {
                             gfx.DrawString(dmcToShortText[dmcGrid[i, j]], font, brush, (x * gridsize) + textwOffset, (y * gridsize) + texthOffset);
                         }
+
                         x++;
                     }
+
                     y++;
                     x=0;
                 }
 
-                //draw a line grid over the text grid
-
-
+                //draw a line grid over the text
                 //horizontal lines, with 10th line being thicker
                 y = 0;
                 x = 0;
+
                 for (int i = chunks[a][1]; i < chunks[a][1] + h + 1; i++)
                 {
                     if (i % 10 == 0)
@@ -248,15 +263,11 @@ namespace DMCConverter
                             gfx.DrawLine(thinLine, new XPoint((x * gridsize) + linewOffset, linehOffset), new XPoint((x * gridsize) + linewOffset, (h * gridsize) + linehOffset));
                         }
                     }
+
                     x++;
                 }
             }
-
-
-            
-
             #endregion End of chart region
-
             #endregion End of drawing region
 
             //save the pdf
