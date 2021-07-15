@@ -30,6 +30,7 @@ namespace DMCConverter
         public int imageGridSize;
         public int imgHeight;
         public int imgWidth;
+        public int[] coord;
         public float ditherFactor;
 
         public Image image;
@@ -41,6 +42,7 @@ namespace DMCConverter
 
         public List<string> allDMCValues;
         public List<string> selectedDMCValues;
+        public List<int[]> markedPositions = new List<int[]>();
 
         public string sourceFile;
         public string[,] dmcDataStore;
@@ -76,6 +78,7 @@ namespace DMCConverter
 
             //initialize the size of the display grid
             imageGridSize = (int)numericUpDown3.Value;
+            coord = new int[2];
         }
         
         /// <summary>
@@ -170,6 +173,9 @@ namespace DMCConverter
                 selectedDMCValues = new List<string>();
             }
 
+            //clear any previously marked grid co-ordinated
+            markedPositions.Clear();
+
             //call the process image method the convert our image to DMC values and display the values on a grid
             //store the returned dmc pixel array and rgbArray to recall them if user accidentally marks the wrong grid cell
             Tuple<string[,],Color[,]> tupleReturn = ConvertImg.processImage(threadAmount, resized, selectedDMCValues, progressBar, ProgressBarText, AlgorithmType.SelectedIndex, allDMCValues, dmcPaletteBox, dither, ditherFactor, commonColourSensitivity.Value);
@@ -200,6 +206,7 @@ namespace DMCConverter
         {
             Brush black = new SolidBrush(Color.FromArgb(20, 20, 20));
             Pen blackPen = new Pen(black, 1);
+            Pen marker = new Pen(black, (imageGridSize / 10) + 1.5f);
             Pen thickBlackPen = new Pen(black, (imageGridSize / 10) + 2f);
 
             imgHeight = (int)numericUpDown1.Value;
@@ -218,6 +225,16 @@ namespace DMCConverter
                         Brush DMCcolour = new SolidBrush(rgbArrayToDrawFrom[i, j]);
 
                         gr.FillRectangle(DMCcolour, j * imageGridSize + 1, i * imageGridSize + 1, imageGridSize - 1, imageGridSize - 1);
+                    }
+                }
+
+                //here is where we should draw red marker squares
+                if (markedPositions.Count > 0)
+                {
+                    foreach (var coord in markedPositions)
+                    {
+                        gr.FillRectangle(new SolidBrush(Color.Red), (coord[0]-1) * imageGridSize, (coord[1]-1) * imageGridSize, imageGridSize - 1, imageGridSize - 1);
+                        gr.DrawLine(marker, (coord[0]) * imageGridSize, (coord[1]) * imageGridSize, (coord[0] - 1) * imageGridSize, (coord[1] - 1) * imageGridSize);
                     }
                 }
 
@@ -328,26 +345,30 @@ namespace DMCConverter
             Point coordinates = me.Location;
             int xVal = ((me.X / imageGridSize) + 1);
             int yVal = ((me.Y / imageGridSize) + 1);
-
+            coord[0] = xVal;
+            coord[1] = yVal;
             if (converted && me.Button == MouseButtons.Left)
             {
                 label5.Text = "x:" + xVal.ToString() + ", y:" + yVal.ToString() + "\n" + "DMC: " + dmcDataStore[yVal - 1, xVal - 1].ToString() + "\n" + rgbArrayToDrawFrom[yVal - 1, xVal - 1].ToArgb().ToString();
             }
 
             //dont modify the array, just draw a red rectangle over the grid
-            //could store an array of marked positions. and cycle through them at the end of image drawing.
+            //can store an array of marked positions. and cycle through them at the end of image drawing.
             if (converted && me.Button == MouseButtons.Right)
             {
-                if (rgbArrayToDrawFrom[yVal - 1, xVal - 1] == Color.Red)
+                if (markedPositions.Any(x => x.SequenceEqual(new int[] {xVal,yVal})))
                 {
-                    rgbArrayToDrawFrom[yVal - 1, xVal - 1] = rgbArray[yVal - 1, xVal - 1];
+                    markedPositions.Remove(markedPositions.First(x => x.SequenceEqual(new int[] { xVal, yVal })));
                 }
                 else
                 {
-                    rgbArrayToDrawFrom[yVal - 1, xVal - 1] = Color.FromArgb(255, 0, 0);
+                    markedPositions.Add(new int[] { xVal, yVal });
                 }
+
+                //redraw to draw new marked positions
                 Invalidate();
             }
+            
         }
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
@@ -401,6 +422,7 @@ namespace DMCConverter
             appdata.imageGridSize = imageGridSize;
             appdata.imgHeight = imgHeight;
             appdata.imgWidth = imgWidth;
+            appdata.markedPositions = markedPositions;
 
             string save = JsonConvert.SerializeObject(appdata, Formatting.Indented);
 
@@ -437,6 +459,7 @@ namespace DMCConverter
             numericUpDown3.Value = loadData.imageGridSize;
             numericUpDown1.Value = loadData.imgHeight;
             WidthValue.Value = loadData.imgWidth;
+            markedPositions = loadData.markedPositions;
 
             Console.WriteLine(loadData.sourceFile);
 
@@ -457,8 +480,12 @@ namespace DMCConverter
 
         private void CreatePDF_Click(object sender, EventArgs e)
         {
-            ExportAsPDF export = new ExportAsPDF();
-            export.Create(image, dmcDataStore, selectedDMCValues);
+            //only create a pdf if an image has been converted
+            if (converted)
+            {
+                ExportAsPDF export = new ExportAsPDF();
+                export.Create(image, dmcDataStore, selectedDMCValues);
+            }
         }
 
         private void ditherCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -487,4 +514,5 @@ public class ApplicationData
     public int imageGridSize { get; set; }
     public int imgHeight { get; set; }
     public int imgWidth { get; set; }
+    public List<int[]> markedPositions { get; set; }
 }
