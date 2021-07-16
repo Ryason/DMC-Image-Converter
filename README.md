@@ -1,4 +1,4 @@
-### [Latest Release](https://github.com/Ryason/DMC-Image-Converter/releases/tag/v0.05)
+### [Latest Release](https://github.com/Ryason/DMC-Image-Converter/releases/tag/v0.06)
 ---
 ### About
 DMC Image Converter is a tool used to create cross stitch patterns from images.
