@@ -30,6 +30,7 @@ namespace DMCConverter
         public int imageGridSize;
         public int imgHeight;
         public int imgWidth;
+        public int algo;
         public int[] coord;
         public float ditherFactor;
 
@@ -175,23 +176,10 @@ namespace DMCConverter
 
             //clear any previously marked grid co-ordinated
             markedPositions.Clear();
+            algo = AlgorithmType.SelectedIndex;
+            ProgressBarText.Text = "Starting";
+            Task.Run(RunConversion);
 
-            //call the process image method the convert our image to DMC values and display the values on a grid
-            //store the returned dmc pixel array and rgbArray to recall them if user accidentally marks the wrong grid cell
-            Tuple<string[,],Color[,]> tupleReturn = ConvertImg.processImage(threadAmount, resized, selectedDMCValues, progressBar, ProgressBarText, AlgorithmType.SelectedIndex, allDMCValues, dmcPaletteBox, dither, ditherFactor, commonColourSensitivity.Value);
-            dmcDataStore = tupleReturn.Item1;
-            rgbArray = tupleReturn.Item2;
-            rgbArrayToDrawFrom = tupleReturn.Item2;
-
-            //update palette counter, just in case user generated threads and didnt pick any
-            tickedCount = dmcPaletteBox.CheckedItems.Count;
-            paletteCount.Text = "Palette Count\n" + tickedCount.ToString() + " / " + dmcPaletteBox.Items.Count.ToString();
-
-            //tell program that a conversion has just taken place
-            //this is here to prevent drawing the grid colors, before the grid colours have been established
-            //DrawImage function checks for this
-            converted = true;
-            selectedDMCValues = new List<String>(dmcPaletteBox.CheckedItems.Cast<String>());
             //re-draw the graphics to update changes made
             Invalidate();
 
@@ -200,6 +188,29 @@ namespace DMCConverter
             //Commented out to test if this is causing the out of bounds crash when doing a second conversion
             //SaveSession();
             //LoadSession();
+        }
+
+        private async Task RunConversion() 
+        {
+            await Task.Run(() =>
+            {
+                //call the process image method the convert our image to DMC values and display the values on a grid
+                //store the returned dmc pixel array and rgbArray to recall them if user accidentally marks the wrong grid cell
+                Tuple<string[,], Color[,]> tupleReturn = ConvertImg.processImage(threadAmount, resized, selectedDMCValues, progressBar, ProgressBarText, algo, allDMCValues, dmcPaletteBox, dither, ditherFactor, commonColourSensitivity.Value);
+                dmcDataStore = tupleReturn.Item1;
+                rgbArray = tupleReturn.Item2;
+                rgbArrayToDrawFrom = tupleReturn.Item2;
+
+                //update palette counter, just in case user generated threads and didnt pick any
+                tickedCount = dmcPaletteBox.CheckedItems.Count;
+                paletteCount.Text = "Palette Count\n" + tickedCount.ToString() + " / " + dmcPaletteBox.Items.Count.ToString();
+
+                //tell program that a conversion has just taken place
+                //this is here to prevent drawing the grid colors, before the grid colours have been established
+                //DrawImage function checks for this
+                converted = true;
+                selectedDMCValues = new List<String>(dmcPaletteBox.CheckedItems.Cast<String>());
+            });
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -493,6 +504,8 @@ namespace DMCConverter
             dither = ditherCheckBox.Checked;
             Console.WriteLine($"Dithering = {dither}");
         }
+
+        
 
         private void ditherFac_ValueChanged(object sender, EventArgs e)
         {
