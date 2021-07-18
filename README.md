@@ -1,4 +1,4 @@
-### [Latest Release](https://github.com/Ryason/DMC-Image-Converter/releases/tag/v0.05)
+### [Latest Release](https://github.com/Ryason/DMC-Image-Converter/releases/tag/v0.06)
 ---
 ### About
 DMC Image Converter is a tool used to create cross stitch patterns from images.
@@ -56,6 +56,7 @@ You also have to be cautious of setting the value too high. As doing so can resu
 ---
 
 ### Features I Would Like To Add
+- MultiThreading. Currently the program 'freezes' when a converion is taking place.
 - Save and load previous conversions. As well as saving and loading of marked grid cells, to keep a users stitching progress.
 - Bigger floss selection. Such as brands of floss other than DMC.
 - Ability to see what the floss colours look like next to the selection panel.
