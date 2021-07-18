@@ -56,6 +56,7 @@ You also have to be cautious of setting the value too high. As doing so can resu
 ---
 
 ### Features I Would Like To Add
+- MultiThreading. Currently the program 'freezes' when a converion is taking place.
 - Save and load previous conversions. As well as saving and loading of marked grid cells, to keep a users stitching progress.
 - Bigger floss selection. Such as brands of floss other than DMC.
 - Ability to see what the floss colours look like next to the selection panel.
