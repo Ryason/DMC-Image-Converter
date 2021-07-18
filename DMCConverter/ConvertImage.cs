@@ -80,8 +80,8 @@ namespace DMCConverter
             if (threadAmount > 0)
             {
                 
-                progressBarText.Text = "Finding Best Thread Colours";
-                Application.DoEvents();
+                //progressBarText.Text = "Finding Best Thread Colours";
+                //Application.DoEvents();
                 //remove all checked DMC values, as new finding best matches
                 for (int i = 0; i < checkBox.Items.Count; i++)
                 {
@@ -109,7 +109,7 @@ namespace DMCConverter
 
                         //increase the value of the progress bar
                         counter++;
-                        progressBar.Value = Convert.ToInt32(Math.Round(((float)counter / (float)total) * 100f));
+                        //progressBar.Value = Convert.ToInt32(Math.Round(((float)counter / (float)total) * 100f));
                     }
                 }
 
@@ -206,7 +206,7 @@ namespace DMCConverter
                     {
                         if (item.Split(' ')[0].ToString() == checkBox.Items[i].ToString())
                         {
-                            checkBox.SetItemChecked(i, true);
+                            //checkBox.SetItemChecked(i, true);
                         }
                     }
                     
@@ -220,7 +220,7 @@ namespace DMCConverter
             //calculate the closest matching dmc value, and store it in an array.
             progressBar.Value = 0;
             counter = 0;
-            progressBarText.Text = "Matching Each Pixel To DMC";
+            //progressBarText.Text = "Matching Each Pixel To DMC";
             Application.DoEvents();
 
             //algorithm error values and their xy positions
@@ -340,7 +340,8 @@ namespace DMCConverter
 
                     //increase the value of the progress bar
                     counter += 1;
-                    progressBar.Value = Convert.ToInt32(Math.Round(((float)counter / (float)total)*100f));
+                    //
+                    //progressBar.Value = Convert.ToInt32(Math.Round(((float)counter / (float)total)*100f));
 
                     //again, this ensures the first comparison will always be stored as the closest matching dmc value
                     distance = 999999999999999;
@@ -351,10 +352,10 @@ namespace DMCConverter
             convertedIMG.Save("Converted.png");
 
             //modify progress bar to show new stage of conversion
-            progressBar.Value = 0;
-            progressBarText.Text = "Drawing Converted Image";
+            //progressBar.Value = 0;
+            //progressBarText.Text = "Drawing Converted Image";
 
-            Application.DoEvents();
+            //Application.DoEvents();
 
             counter = 0;
             for (int i = 0; i < h; i++)
@@ -365,7 +366,7 @@ namespace DMCConverter
 
                     //increase the value of the progress bar
                     counter += 1;
-                    progressBar.Value = Convert.ToInt32(Math.Round(((float)counter / (float)total) * 100f));
+                    //progressBar.Value = Convert.ToInt32(Math.Round(((float)counter / (float)total) * 100f));
                 }
             }
 
