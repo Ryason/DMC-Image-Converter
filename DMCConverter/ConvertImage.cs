@@ -20,9 +20,9 @@ namespace DMCConverter
         /// </summary>
         /// <param name="img">The image the user wants to convert to DMC</param>
         /// <param name="vals"> List of selected DMC values </param>
-        public static Tuple<string[,],Color[,]> processImage(int threadAmount, Image img, List<String> vals, ProgressBar progressBar, Label progressBarText, int AlgorithmType, List<String> allDMCValues, CheckedListBox checkBox, bool dither, float ditherFactor, decimal commonColourSensitivity)
+        public static Tuple<string[,],Color[,]> processImage(IProgress<int> progress, IProgress<int> unCheckItem, IProgress<int> checkItem,int threadAmount, Image img, List<String> vals, ProgressBar progressBar, Label progressBarText, int AlgorithmType, List<String> allDMCValues, CheckedListBox checkBox, bool dither, float ditherFactor, decimal commonColourSensitivity)
         {
-            progressBar.Value = 0;
+            progress.Report(0);
             //dictionary for storing pixel values, to determine most frequesnt colours.
             Dictionary<Color, int> BestMatchedColours = new Dictionary<Color, int>();
             
@@ -82,10 +82,10 @@ namespace DMCConverter
                 
                 //progressBarText.Text = "Finding Best Thread Colours";
                 //Application.DoEvents();
-                //remove all checked DMC values, as new finding best matches
+                //remove all checked DMC values, as now finding best matches
                 for (int i = 0; i < checkBox.Items.Count; i++)
                 {
-                    checkBox.SetItemCheckState(i, 0);
+                    unCheckItem.Report(i);
                 }
 
                 //loop over all pixels in the image that we want to convert
@@ -109,7 +109,7 @@ namespace DMCConverter
 
                         //increase the value of the progress bar
                         counter++;
-                        //progressBar.Value = Convert.ToInt32(Math.Round(((float)counter / (float)total) * 100f));
+                        progress.Report(Convert.ToInt32(Math.Round(((float)counter / (float)total) * 100f)));
                     }
                 }
 
@@ -206,7 +206,7 @@ namespace DMCConverter
                     {
                         if (item.Split(' ')[0].ToString() == checkBox.Items[i].ToString())
                         {
-                            //checkBox.SetItemChecked(i, true);
+                            checkItem.Report(i);
                         }
                     }
                     
@@ -218,7 +218,7 @@ namespace DMCConverter
 
             //loop over all pixels and compare every dmc rgb value to the pixel's rgb value.
             //calculate the closest matching dmc value, and store it in an array.
-            progressBar.Value = 0;
+            progress.Report(0);
             counter = 0;
             //progressBarText.Text = "Matching Each Pixel To DMC";
             Application.DoEvents();
@@ -341,7 +341,7 @@ namespace DMCConverter
                     //increase the value of the progress bar
                     counter += 1;
                     //
-                    //progressBar.Value = Convert.ToInt32(Math.Round(((float)counter / (float)total)*100f));
+                    progress.Report(Convert.ToInt32(Math.Round(((float)counter / (float)total)*100f)));
 
                     //again, this ensures the first comparison will always be stored as the closest matching dmc value
                     distance = 999999999999999;
@@ -352,7 +352,7 @@ namespace DMCConverter
             convertedIMG.Save("Converted.png");
 
             //modify progress bar to show new stage of conversion
-            //progressBar.Value = 0;
+            progress.Report(0);
             //progressBarText.Text = "Drawing Converted Image";
 
             //Application.DoEvents();
@@ -366,7 +366,7 @@ namespace DMCConverter
 
                     //increase the value of the progress bar
                     counter += 1;
-                    //progressBar.Value = Convert.ToInt32(Math.Round(((float)counter / (float)total) * 100f));
+                    progress.Report(Convert.ToInt32(Math.Round(((float)counter / (float)total) * 100f)));
                 }
             }
 

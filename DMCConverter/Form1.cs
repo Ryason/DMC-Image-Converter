@@ -192,24 +192,59 @@ namespace DMCConverter
 
         private async Task RunConversion() 
         {
+            //WARNING
+            //if amount of slectable threads changes in the future, this will not display the correct number present in the palette
+            //currently starts at 454 as every checkbox is reset to false upon starting a new conversion.
+            //so when count is incremented, it was starting from -454, not 0;
+            int count = 454;
+            //WARNING
+            var progress = new Progress<int>(value =>
+            {
+                base.Invoke((Action)delegate
+                {
+                    progressBar.Value = value;
+                });
+
+            });
+
+            var unCheckItem = new Progress<int>(index =>
+            {
+                base.Invoke((Action)delegate
+                {
+                    dmcPaletteBox.SetItemChecked(index, false);
+                    count--;
+                });
+            });
+
+            var checkItem = new Progress<int>(index =>
+            {
+                base.Invoke((Action)delegate
+                {
+                    dmcPaletteBox.SetItemChecked(index, true);
+                    count++;
+                    paletteCount.Text = "Palette Count\n" + count.ToString() + " / " + dmcPaletteBox.Items.Count.ToString();
+                });
+            });
+
             await Task.Run(() =>
             {
                 //call the process image method the convert our image to DMC values and display the values on a grid
                 //store the returned dmc pixel array and rgbArray to recall them if user accidentally marks the wrong grid cell
-                Tuple<string[,], Color[,]> tupleReturn = ConvertImg.processImage(threadAmount, resized, selectedDMCValues, progressBar, ProgressBarText, algo, allDMCValues, dmcPaletteBox, dither, ditherFactor, commonColourSensitivity.Value);
+                Tuple<string[,], Color[,]> tupleReturn = ConvertImg.processImage(progress, unCheckItem, checkItem, threadAmount, resized, selectedDMCValues, progressBar, ProgressBarText, algo, allDMCValues, dmcPaletteBox, dither, ditherFactor, commonColourSensitivity.Value);
                 dmcDataStore = tupleReturn.Item1;
                 rgbArray = tupleReturn.Item2;
                 rgbArrayToDrawFrom = tupleReturn.Item2;
 
                 //update palette counter, just in case user generated threads and didnt pick any
                 tickedCount = dmcPaletteBox.CheckedItems.Count;
-                paletteCount.Text = "Palette Count\n" + tickedCount.ToString() + " / " + dmcPaletteBox.Items.Count.ToString();
+                //paletteCount.Text = "Palette Count\n" + tickedCount.ToString() + " / " + dmcPaletteBox.Items.Count.ToString();
 
                 //tell program that a conversion has just taken place
                 //this is here to prevent drawing the grid colors, before the grid colours have been established
                 //DrawImage function checks for this
                 converted = true;
                 selectedDMCValues = new List<String>(dmcPaletteBox.CheckedItems.Cast<String>());
+                Invalidate();
             });
         }
 
