@@ -20,9 +20,12 @@ namespace DMCConverter
         /// </summary>
         /// <param name="img">The image the user wants to convert to DMC</param>
         /// <param name="vals"> List of selected DMC values </param>
-        public static Tuple<string[,],Color[,]> processImage(IProgress<int> progress, IProgress<int> unCheckItem, IProgress<int> checkItem,int threadAmount, Image img, List<String> vals, ProgressBar progressBar, Label progressBarText, int AlgorithmType, List<String> allDMCValues, CheckedListBox checkBox, bool dither, float ditherFactor, decimal commonColourSensitivity)
+        public static Tuple<string[,],Color[,]> processImage(IProgress<string> loadingText,IProgress<int> progress, IProgress<int> unCheckItem, IProgress<int> checkItem,int threadAmount, Image img, List<String> vals, ProgressBar progressBar, Label progressBarText, int AlgorithmType, List<String> allDMCValues, CheckedListBox checkBox, bool dither, float ditherFactor, decimal commonColourSensitivity)
         {
+            //set progress bar and text
             progress.Report(0);
+            loadingText.Report("Matching Each Pixel To DMC");
+
             //dictionary for storing pixel values, to determine most frequesnt colours.
             Dictionary<Color, int> BestMatchedColours = new Dictionary<Color, int>();
             
@@ -36,8 +39,6 @@ namespace DMCConverter
             //this will be used when we have a dmc match for each pixel
             //we will assign each pixel the rgb value of its corresponding dmc match
             Bitmap convertedIMG = new Bitmap(image);
-
-            
 
             //width and height of image we are converting
             //used in looping over each pixel
@@ -70,6 +71,7 @@ namespace DMCConverter
                 DMCValues = allDMCValues;
             }
 
+            //dict to store how many times individual colours appear in the image
             Dictionary<String, int> colourCount = new Dictionary<String, int>();
 
             //list for all DMC's used
@@ -88,10 +90,15 @@ namespace DMCConverter
                     unCheckItem.Report(i);
                 }
 
+                //skipping pixels probably offers one of the biggest speed ups, since each pixel is matched to dmc to track common colours
+                //skippin say every 2 pixels has a 2^2 reduction in calculations.
+                //making larger images more viable, and smaller images convert much quicker
+                int skipPixels = 4;
+                int addToCounter = skipPixels * skipPixels;
                 //loop over all pixels in the image that we want to convert
-                for (int i = 0; i < w; i++)
+                for (int i = 0; i < w; i+=skipPixels)
                 {
-                    for (int j = 0; j < h; j++)
+                    for (int j = 0; j < h; j+=skipPixels)
                     {
                         Color currentPixel = convert.GetPixel(i, j);
                         String currentDMC = FindClosestDMC(currentPixel, allDMCValues, AlgorithmType);
@@ -108,7 +115,7 @@ namespace DMCConverter
                         }
 
                         //increase the value of the progress bar
-                        counter++;
+                        counter += addToCounter;
                         progress.Report(Convert.ToInt32(Math.Round(((float)counter / (float)total) * 100f)));
                     }
                 }
@@ -121,9 +128,7 @@ namespace DMCConverter
                 //#### #### #### #### #### #### #### #### 
                 //here, you could draw all possible colours in an image to display to the user
                 //essentially, remake the image but with all commmon colours next to each other
-                //image can be a factor of the original size, just be dividing the counts of each colour by an amount
-
-
+                //image can be a factor of the original size, just be dividing the counts of each colour by an 
 
                 List<String> commonColours = new List<String>();
 
@@ -136,11 +141,9 @@ namespace DMCConverter
                     }
                     else
                     {
-                        // ######  ######  ######  ######  ######  ######  ######  ######  ######  ######  
                         //check for similar colours when adding a new colour to the list
                         //need to do this to prevent having too many of a similar colours
                         //if not, it limits the palette a lot in some images where one or 2 colours dominate
-
                         if (commonColours.Count > 1)
                         {
                             //split each common colour string and convert rgb strings to ints
@@ -220,7 +223,7 @@ namespace DMCConverter
             //calculate the closest matching dmc value, and store it in an array.
             progress.Report(0);
             counter = 0;
-            //progressBarText.Text = "Matching Each Pixel To DMC";
+            loadingText.Report("Drawing Converted Image");
             Application.DoEvents();
 
             //algorithm error values and their xy positions
@@ -285,7 +288,7 @@ namespace DMCConverter
                             //set the corresponding dmc value as the new closest match for the current pixel
                             closestDMC = splitItem[0];
                             convertedIMG.SetPixel(i, j, Color.FromArgb(rVal, gVal, bVal));
-                            dmcPixelDataArray[j, i] = closestDMC;
+                            dmcPixelDataArray[j, i] = closestDMC; 
                         }
                     }
 
@@ -353,7 +356,7 @@ namespace DMCConverter
 
             //modify progress bar to show new stage of conversion
             progress.Report(0);
-            //progressBarText.Text = "Drawing Converted Image";
+            loadingText.Report("Drawing Converted Image");
 
             //Application.DoEvents();
 
@@ -370,15 +373,14 @@ namespace DMCConverter
                 }
             }
 
-            //God bless this son of a bitch tuple return!!!!!
-            //allows to return both image data and converted image data to the form class
-            //useful when user makes a mistake and marks the wrong grid cell
-            //unmarked coour is now available to switch it from marked red to the correct colour.
+            loadingText.Report("Conversion Complete");
+
             return new Tuple<string[,],Color[,]>(dmcPixelDataArray,rgbArray);
         }
 
         public static string FindClosestDMC(Color RGBToDMC, List<string> DMCValues, int AlgorithmType)
         {
+            //ensure first dstance checked will become the new closest distance
             double distance = 99999999999d;
 
             string closestDMC = "";
