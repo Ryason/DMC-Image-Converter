@@ -81,9 +81,7 @@ namespace DMCConverter
             //check if wanting to auto generate best threads to use in the image conversion
             if (threadAmount > 0)
             {
-                
-                //progressBarText.Text = "Finding Best Thread Colours";
-                //Application.DoEvents();
+                loadingText.Report("Finding Best Thread Colours");
                 //remove all checked DMC values, as now finding best matches
                 for (int i = 0; i < checkBox.Items.Count; i++)
                 {
@@ -212,7 +210,6 @@ namespace DMCConverter
                             checkItem.Report(i);
                         }
                     }
-                    
                 }
 
                 //set the dmc values to be used in the image conversion
@@ -343,7 +340,6 @@ namespace DMCConverter
 
                     //increase the value of the progress bar
                     counter += 1;
-                    //
                     progress.Report(Convert.ToInt32(Math.Round(((float)counter / (float)total)*100f)));
 
                     //again, this ensures the first comparison will always be stored as the closest matching dmc value
@@ -357,8 +353,6 @@ namespace DMCConverter
             //modify progress bar to show new stage of conversion
             progress.Report(0);
             loadingText.Report("Drawing Converted Image");
-
-            //Application.DoEvents();
 
             counter = 0;
             for (int i = 0; i < h; i++)
