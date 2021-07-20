@@ -50,6 +50,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.commonColourSensitivity = new System.Windows.Forms.NumericUpDown();
             this.ditherFac = new System.Windows.Forms.NumericUpDown();
             this.ditherCheckBox = new System.Windows.Forms.CheckBox();
@@ -60,8 +62,7 @@
             this.saveButton = new System.Windows.Forms.Button();
             this.loadButton = new System.Windows.Forms.Button();
             this.CreatePDF = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
+            this.LoadConversionDialog = new System.Windows.Forms.OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.UserImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.WidthValue)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
@@ -769,6 +770,24 @@
             this.panel2.Size = new System.Drawing.Size(175, 206);
             this.panel2.TabIndex = 22;
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(78, 169);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(47, 13);
+            this.label6.TabIndex = 27;
+            this.label6.Text = "Strength";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(3, 117);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(121, 13);
+            this.label2.TabIndex = 26;
+            this.label2.Text = "Auto Colour Uniqueness";
+            // 
             // commonColourSensitivity
             // 
             this.commonColourSensitivity.Location = new System.Drawing.Point(129, 115);
@@ -879,23 +898,9 @@
             this.CreatePDF.UseVisualStyleBackColor = true;
             this.CreatePDF.Click += new System.EventHandler(this.CreatePDF_Click);
             // 
-            // label2
+            // LoadConversionDialog
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 117);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(121, 13);
-            this.label2.TabIndex = 26;
-            this.label2.Text = "Auto Colour Uniqueness";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(78, 169);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(47, 13);
-            this.label6.TabIndex = 27;
-            this.label6.Text = "Strength";
+            this.LoadConversionDialog.FileName = "LoadConversionDialog";
             // 
             // Form1
             // 
@@ -971,6 +976,7 @@
         private System.Windows.Forms.NumericUpDown commonColourSensitivity;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.OpenFileDialog LoadConversionDialog;
     }
 }
 

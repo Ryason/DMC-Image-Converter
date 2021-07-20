@@ -63,10 +63,6 @@ namespace DMCConverter
             InitializeComponent();
 
             paletteCount.Text = "Palette Count\n0 / " + dmcPaletteBox.Items.Count.ToString();
-            
-            //my attepmt at enabling doublebuffering, to speed up the datagridview scrolling/rendering slowness.
-            //mostly coppied code form stack overflow and an article on 10tec.com that explains the issue and gives some workaround code.
-            EnableDoubleBuffering();
 
             //sets starting algorithm type to CIE2000
             AlgorithmType.SelectedIndex = 3;
@@ -177,32 +173,34 @@ namespace DMCConverter
             //clear any previously marked grid co-ordinated
             markedPositions.Clear();
             algo = AlgorithmType.SelectedIndex;
-            ProgressBarText.Text = "Starting";
+            
             Task.Run(RunConversion);
 
             //re-draw the graphics to update changes made
             Invalidate();
-
-            ProgressBarText.Text = "Conversion Complete";
 
             //Commented out to test if this is causing the out of bounds crash when doing a second conversion
             //SaveSession();
             //LoadSession();
         }
 
-        private async Task RunConversion() 
+        //run the conversion in an async task to free up the ui thread
+        //prevents the program looking like it has frozen
+        //also prevents "not responding" when trying to use the program while converting
+        private async Task RunConversion()
         {
             //WARNING
-            //if amount of slectable threads changes in the future, this will not display the correct number present in the palette
+            //if amount of selectable dmc threads changes in the future, this will not display the correct number present in the palette
             //currently starts at 454 as every checkbox is reset to false upon starting a new conversion.
             //so when count is incremented, it was starting from -454, not 0;
             int count = 454;
             //WARNING
+
             var progress = new Progress<int>(value =>
             {
                 base.Invoke((Action)delegate
                 {
-                    progressBar.Value = value;
+                    progressBar.Value = ConvertImg.Clamp(0,100,value);
                 });
 
             });
@@ -216,6 +214,7 @@ namespace DMCConverter
                 });
             });
 
+            //should pass all the values to be checked at the end of the conversion, and set them in one call
             var checkItem = new Progress<int>(index =>
             {
                 base.Invoke((Action)delegate
@@ -226,23 +225,32 @@ namespace DMCConverter
                 });
             });
 
+            var loadingText = new Progress<string>(str =>
+            {
+                base.Invoke((Action)delegate
+                {
+                    ProgressBarText.Text = str;
+                });
+            });
+
             await Task.Run(() =>
             {
                 //call the process image method the convert our image to DMC values and display the values on a grid
                 //store the returned dmc pixel array and rgbArray to recall them if user accidentally marks the wrong grid cell
-                Tuple<string[,], Color[,]> tupleReturn = ConvertImg.processImage(progress, unCheckItem, checkItem, threadAmount, resized, selectedDMCValues, progressBar, ProgressBarText, algo, allDMCValues, dmcPaletteBox, dither, ditherFactor, commonColourSensitivity.Value);
+                Tuple<string[,], Color[,]> tupleReturn = ConvertImg.processImage(loadingText, progress, unCheckItem, checkItem, threadAmount, resized, selectedDMCValues, progressBar, ProgressBarText, algo, allDMCValues, dmcPaletteBox, dither, ditherFactor, commonColourSensitivity.Value);
                 dmcDataStore = tupleReturn.Item1;
                 rgbArray = tupleReturn.Item2;
                 rgbArrayToDrawFrom = tupleReturn.Item2;
 
                 //update palette counter, just in case user generated threads and didnt pick any
                 tickedCount = dmcPaletteBox.CheckedItems.Count;
-                //paletteCount.Text = "Palette Count\n" + tickedCount.ToString() + " / " + dmcPaletteBox.Items.Count.ToString();
 
                 //tell program that a conversion has just taken place
                 //this is here to prevent drawing the grid colors, before the grid colours have been established
                 //DrawImage function checks for this
                 converted = true;
+
+                //store selected values, this will be used if creating a pdf
                 selectedDMCValues = new List<String>(dmcPaletteBox.CheckedItems.Cast<String>());
                 Invalidate();
             });
@@ -275,15 +283,20 @@ namespace DMCConverter
                 }
 
                 //here is where we should draw red marker squares
-                if (markedPositions.Count > 0)
+                if (markedPositions!= null)
                 {
-                    foreach (var coord in markedPositions)
+                    if (markedPositions.Count > 0)
                     {
-                        gr.FillRectangle(new SolidBrush(Color.Red), (coord[0]-1) * imageGridSize, (coord[1]-1) * imageGridSize, imageGridSize - 1, imageGridSize - 1);
-                        gr.DrawLine(marker, (coord[0]) * imageGridSize, (coord[1]) * imageGridSize, (coord[0] - 1) * imageGridSize, (coord[1] - 1) * imageGridSize);
+                        foreach (var coord in markedPositions)
+                        {
+                            //create a red box to cover dmc colours
+                            gr.FillRectangle(new SolidBrush(Color.FromArgb(180, Color.Red)), (coord[0] - 1) * imageGridSize +1, (coord[1] - 1) * imageGridSize +1, imageGridSize - 1, imageGridSize - 1);
+                            //draw a black line over the red box, to distinguish from red dmc colours
+                            gr.DrawLine(marker, (coord[0]) * imageGridSize, (coord[1]) * imageGridSize, (coord[0] - 1) * imageGridSize, (coord[1] - 1) * imageGridSize);
+                        }
                     }
                 }
-
+                
                 //activates the mouse toolTip
                 toolTip1.Active = true;
             }
@@ -319,18 +332,6 @@ namespace DMCConverter
 
             //draw image;
             pictureBox1.Image = bm;
-        }
-
-        public void EnableDoubleBuffering()
-        {
-            // Set the value of the double-buffering style bits to true.
-            this.SetStyle(ControlStyles.DoubleBuffer |
-                          ControlStyles.UserPaint |
-                          ControlStyles.AllPaintingInWmPaint,
-                          true);
-            this.UpdateStyles();
-
-            
         }
 
         /// <summary>
@@ -414,7 +415,6 @@ namespace DMCConverter
                 //redraw to draw new marked positions
                 Invalidate();
             }
-            
         }
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
@@ -442,17 +442,7 @@ namespace DMCConverter
             }
         }
 
-        //Allow the saving of converted images (save as json file?)
-        //
-        //THINGS TO STORE
-        //  image file path (string)
-        //  Height, Width of converted image (int)
-        //  rgbArray and rgbArrayToDrawFrom (Color[,])
-        //  selectedDMCValues (List<string>)
-        //  dmcDataStore (string[,])
-        //  threadAmount
-        //  imageGridSize
-        //  algorithmType
+        //create a new class for holding program data, then serialize to json and write to file
         public void SaveSession()
         {
             ApplicationData appdata = new ApplicationData();
@@ -473,8 +463,6 @@ namespace DMCConverter
             string save = JsonConvert.SerializeObject(appdata, Formatting.Indented);
 
             File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "/Save.json", save);
-
-            Console.WriteLine(save);
         }
 
         //Load everything from save file
