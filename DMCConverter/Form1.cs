@@ -19,6 +19,8 @@ namespace DMCConverter
     [Serializable]
     public partial class Form1 : Form
     {
+        ApplicationData appdata = new ApplicationData();
+
         public bool imageLoaded;
         public bool converted;
         public bool loading = false;
@@ -75,6 +77,8 @@ namespace DMCConverter
 
             //initialize the size of the display grid
             imageGridSize = (int)numericUpDown3.Value;
+
+            //co-ordinate array holder, used in displaying grid information
             coord = new int[2];
         }
         
@@ -143,12 +147,8 @@ namespace DMCConverter
             selectedDMCValues = new List<String>(dmcPaletteBox.CheckedItems.Cast<String>());
         }
 
-        /// <summary>
-        /// Upon clicking the convert button, invoke the processImage method of the convertImage class
-        /// This will perfom the matching of DMC values to the pixels of the resized image
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        // Upon clicking the convert button, invoke the processImage method of the convertImage class
+        // This will perfom the matching of DMC values to the pixels of the resized image
         public void ConvertButton_Click(object sender, EventArgs e)
         {
             //checking ticked count, and wether the user wants to auto match threads, makes sure we don't try and run the conversion without any DMC values to match against
@@ -272,9 +272,9 @@ namespace DMCConverter
 
             if (converted)
             {
-                for (int i = 0; i < numericUpDown1.Value; i++)
+                for (int i = 0; i < imgHeight; i++)
                 {
-                    for (int j = 0; j < WidthValue.Value; j++)
+                    for (int j = 0; j < imgWidth; j++)
                     {
                         Brush DMCcolour = new SolidBrush(rgbArrayToDrawFrom[i, j]);
 
@@ -332,6 +332,7 @@ namespace DMCConverter
 
             //draw image;
             pictureBox1.Image = bm;
+            
         }
 
         /// <summary>
@@ -368,11 +369,7 @@ namespace DMCConverter
             }
         }
 
-        /// <summary>
-        /// stores the value of threadAmount
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        //stores the value of threadAmount
         private void numericUpDown2_ValueChanged(object sender, EventArgs e)
         {
             threadAmount = (int)numericUpDown2.Value;
@@ -389,18 +386,22 @@ namespace DMCConverter
         private void pictureBox1_MouseClick(object sender, MouseEventArgs e)
         {
             MouseEventArgs me = (MouseEventArgs)e;
+            
             Point coordinates = me.Location;
+            
             int xVal = ((me.X / imageGridSize) + 1);
             int yVal = ((me.Y / imageGridSize) + 1);
+            
             coord[0] = xVal;
             coord[1] = yVal;
+
             if (converted && me.Button == MouseButtons.Left)
             {
                 label5.Text = "x:" + xVal.ToString() + ", y:" + yVal.ToString() + "\n" + "DMC: " + dmcDataStore[yVal - 1, xVal - 1].ToString() + "\n" + rgbArrayToDrawFrom[yVal - 1, xVal - 1].ToArgb().ToString();
             }
 
-            //dont modify the array, just draw a red rectangle over the grid
-            //can store an array of marked positions. and cycle through them at the end of image drawing.
+            //dont modify the rgb array, just draw a red rectangle(square) over the grid
+            //can store an array of marked positions and cycle through them at the end of image drawing.
             if (converted && me.Button == MouseButtons.Right)
             {
                 if (markedPositions.Any(x => x.SequenceEqual(new int[] {xVal,yVal})))
@@ -412,8 +413,14 @@ namespace DMCConverter
                     markedPositions.Add(new int[] { xVal, yVal });
                 }
 
+                //POTENTIAL FOR CHANGE
+                //instead of calling invalidate, redrawing the entire form
+                //just draw the red marker squares
+                //or only draw the needed grid cell colour in the case of removing a red mark
+
                 //redraw to draw new marked positions
                 Invalidate();
+                SaveSession();
             }
         }
 
@@ -445,8 +452,6 @@ namespace DMCConverter
         //create a new class for holding program data, then serialize to json and write to file
         public void SaveSession()
         {
-            ApplicationData appdata = new ApplicationData();
-
             appdata.sourceFile = sourceFile;
             appdata.dmcDataStrore = dmcDataStore;
             appdata.rgbArray = rgbArray;
@@ -495,7 +500,7 @@ namespace DMCConverter
             WidthValue.Value = loadData.imgWidth;
             markedPositions = loadData.markedPositions;
 
-            Console.WriteLine(loadData.sourceFile);
+            Console.WriteLine($"Loading [{loadData.sourceFile}]");
 
             Invalidate();
 
@@ -527,8 +532,6 @@ namespace DMCConverter
             dither = ditherCheckBox.Checked;
             Console.WriteLine($"Dithering = {dither}");
         }
-
-        
 
         private void ditherFac_ValueChanged(object sender, EventArgs e)
         {
