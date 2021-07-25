@@ -173,11 +173,13 @@ namespace DMCConverter
             //clear any previously marked grid co-ordinated
             markedPositions.Clear();
             algo = AlgorithmType.SelectedIndex;
+
             
+
             Task.Run(RunConversion);
 
             //re-draw the graphics to update changes made
-            Invalidate();
+            //Invalidate();
 
             //Commented out to test if this is causing the out of bounds crash when doing a second conversion
             //SaveSession();
@@ -237,10 +239,12 @@ namespace DMCConverter
             {
                 //call the process image method the convert our image to DMC values and display the values on a grid
                 //store the returned dmc pixel array and rgbArray to recall them if user accidentally marks the wrong grid cell
+                Console.WriteLine($"drawing with height and width of x ={resized.Width}, y={resized.Height}");
                 Tuple<string[,], Color[,]> tupleReturn = ConvertImg.processImage(loadingText, progress, unCheckItem, checkItem, threadAmount, resized, selectedDMCValues, progressBar, ProgressBarText, algo, allDMCValues, dmcPaletteBox, dither, ditherFactor, commonColourSensitivity.Value);
                 dmcDataStore = tupleReturn.Item1;
                 rgbArray = tupleReturn.Item2;
                 rgbArrayToDrawFrom = tupleReturn.Item2;
+                Console.WriteLine($"array from convert image func x ={rgbArrayToDrawFrom.GetLength(1)}, y={rgbArrayToDrawFrom.GetLength(0)}");
 
                 //update palette counter, just in case user generated threads and didnt pick any
                 tickedCount = dmcPaletteBox.CheckedItems.Count;
@@ -254,6 +258,7 @@ namespace DMCConverter
                 selectedDMCValues = new List<String>(dmcPaletteBox.CheckedItems.Cast<String>());
                 Invalidate();
             });
+            
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -272,6 +277,8 @@ namespace DMCConverter
 
             if (converted)
             {
+
+                Console.WriteLine($"drawing using array x ={rgbArrayToDrawFrom.GetLength(1)}, y={rgbArrayToDrawFrom.GetLength(0)}");
                 for (int i = 0; i < imgHeight; i++)
                 {
                     for (int j = 0; j < imgWidth; j++)
@@ -455,6 +462,7 @@ namespace DMCConverter
             appdata.sourceFile = sourceFile;
             appdata.dmcDataStrore = dmcDataStore;
             appdata.rgbArray = rgbArray;
+            Console.WriteLine($"saving array x ={rgbArrayToDrawFrom.GetLength(1)}, y={rgbArrayToDrawFrom.GetLength(0)}");
             appdata.rgbArrayToDrawFrom = rgbArrayToDrawFrom;
             appdata.selectedDMCValues = selectedDMCValues;
             appdata.maxSize = maxSize;
@@ -481,28 +489,30 @@ namespace DMCConverter
             converted = true;
             imageLoaded = true;
             sourceFile = loadData.sourceFile;
+            dmcDataStore = loadData.dmcDataStrore;
+            rgbArray = loadData.rgbArray;
+            
+            rgbArrayToDrawFrom = loadData.rgbArrayToDrawFrom;
+            Console.WriteLine($"loading array x ={rgbArrayToDrawFrom.GetLength(1)}, y={rgbArrayToDrawFrom.GetLength(0)}");
+            selectedDMCValues = loadData.selectedDMCValues;
+            maxSize = loadData.maxSize;
             resized = ConvertImg.resizeImage(Image.FromFile(loadData.sourceFile),
                                              loadData.imgWidth,
                                              loadData.imgHeight,
                                              maxSize);
             toConvert = resized;
             UserImageBox.Image = resized;
-            dmcDataStore = loadData.dmcDataStrore;
-            rgbArray = loadData.rgbArray;
-            rgbArrayToDrawFrom = loadData.rgbArrayToDrawFrom;
-            selectedDMCValues = loadData.selectedDMCValues;
-            maxSize = loadData.maxSize;
             tickedCount = loadData.tickedCount;
             numericUpDown2.Value = loadData.threadAmount;
             threadAmount = loadData.threadAmount;
             numericUpDown3.Value = loadData.imageGridSize;
             numericUpDown1.Value = loadData.imgHeight;
             WidthValue.Value = loadData.imgWidth;
+            imgWidth = loadData.imgWidth;
+            imgHeight = loadData.imgHeight;
             markedPositions = loadData.markedPositions;
 
             Console.WriteLine($"Loading [{loadData.sourceFile}]");
-
-            Invalidate();
 
             loading = false;
         }
