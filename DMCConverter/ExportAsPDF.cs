@@ -10,7 +10,7 @@ namespace DMCConverter
 {
     public class ExportAsPDF
     {
-        public void Create(Image image, string[,] dmcGrid, List<string> selectedDMCValues)
+        public void Create(Image image, string[,] dmcGrid, List<string> selectedDMCValues, string fileName)
         {
             Dictionary<string, string> dmcToShortText = new Dictionary<string, string>();
             Dictionary<string, Color> dmcValues = new Dictionary<string, Color>();
@@ -18,9 +18,9 @@ namespace DMCConverter
             PdfDocument document = new PdfDocument();
 
             //Create multiple pages to fit an entire conversion prjoect on
-            ///first need to break up the image, using the DMCgridarray's width and height.
-            ///then calculate how many pages it needs by breaking it up into chunks of a set width and height
-            ///create a page for each chunk using a set of starting co-ordinates that reference the DMCgrid
+            //first need to break up the image, using the DMCgridarray's width and height.
+            //then calculate how many pages it needs by breaking it up into chunks of a set width and height
+            //create a page for each chunk using a set of starting co-ordinates that reference the DMCgrid
 
             //starting by assigning each dmc value an id
             //assemble the dictionary of dmc values and assign them a short text code
@@ -48,6 +48,7 @@ namespace DMCConverter
                     if (!dmcToShortText.ContainsKey(dmcGrid[i, j]))
                     {
                         dmcToShortText.Add(dmcGrid[i, j], $"{alphabet[xyzID]}{numID}");
+
                         if (alphabet[xyzID] == 'Z')
                         {
                             xyzID = 0;
@@ -88,9 +89,11 @@ namespace DMCConverter
             foreach (var item in selectedDMCValues)
             {
                 string[] dmcString = item.Split('\t');
+
                 Color col = Color.FromArgb(Convert.ToInt32(dmcString[2]),
                                            Convert.ToInt32(dmcString[3]),
                                            Convert.ToInt32(dmcString[4]));
+
                 dmcValues.Add(dmcString[0], col);
 
             }
@@ -126,6 +129,7 @@ namespace DMCConverter
             }
 
             image.Save(strm, System.Drawing.Imaging.ImageFormat.Png);
+
             XImage img = XImage.FromStream(strm);
 
             //create fonts for text, and brushes for the colours of text and grid
@@ -149,11 +153,14 @@ namespace DMCConverter
             foreach (var item in dmcToShortText.Keys)
             {
                 string keyString = $"{dmcToShortText[item]} = {item}";
+
                 gfx.DrawString(keyString, font, brush, startX, (count * lineSpace) + startY - 50);
 
                 //draw a square next to each string showing its thread colour (needs converted colour data)
                 XPen dmcCol = new XPen(XColor.FromArgb(dmcValues[item].ToArgb()), 6);
+
                 gfx.DrawRectangle(dmcCol, new XRect(new XPoint(startX + 60, (count * lineSpace) + startY - 56), new XSize(5,5)));
+                
                 count++;
             }
             #endregion End of page one region
@@ -180,6 +187,7 @@ namespace DMCConverter
                 for (int j = 0; j < chunkW; j++)
                 {
                     chunks.Add(new int[] {j*w, i*h});
+
                     Console.WriteLine($"new chunk at {j * w},{i * h}");
                 }
             }
@@ -190,17 +198,12 @@ namespace DMCConverter
                 document.AddPage();
 
                 gfx = XGraphics.FromPdfPage(document.Pages[a+1]); //a+1 because first page already exists
+
                 int textwOffset = 20;
                 int texthOffset = 20;
 
                 int linewOffset = textwOffset + -4;
                 int linehOffset = texthOffset + -12;
-
-                //debug!!!
-                //right now things arent being drawn in the correct positions.
-                //because when drawing, i and j are starting at 30 multiples.
-                //and when setting the poitns in the gfx draw function, those 30 multiples are being used
-                //i need to normalise them to 0 or something
 
                 //drawtext in a grid that shows short text code of each dmc pixel
                 //start at chunk location and go up to chunk location +h,w
@@ -226,7 +229,6 @@ namespace DMCConverter
                 //horizontal lines, with 10th line being thicker
                 y = 0;
                 x = 0;
-
                 for (int i = chunks[a][1]; i < chunks[a][1] + h + 1; i++)
                 {
                     if (i % 10 == 0)
@@ -270,12 +272,13 @@ namespace DMCConverter
             #endregion End of chart region
             #endregion End of drawing region
 
+            string pdf = AppDomain.CurrentDomain.BaseDirectory + $"/PDF_Charts/{fileName}.pdf";
+
             //save the pdf
-            string filename = "test.pdf";
-            document.Save(filename);
+            document.Save(pdf);
 
             //opens the pdf for the user
-            Process.Start("test.pdf");
+            Process.Start(pdf);
         }
     }
 }

@@ -24,6 +24,7 @@ namespace DMCConverter
         public bool imageLoaded;
         public bool converted;
         public bool loading = false;
+        public bool loadLast = true;
         public bool dither = false;
 
         public int maxSize;
@@ -48,6 +49,7 @@ namespace DMCConverter
         public List<int[]> markedPositions = new List<int[]>();
 
         public string sourceFile;
+        public string fileName;
         public string[,] dmcDataStore;
 
         public Graphics g;
@@ -63,6 +65,19 @@ namespace DMCConverter
             ditherFactor = 1;
 
             InitializeComponent();
+
+            ConvertButton.BringToFront();
+
+            //if no save / pdf folder present, create it.
+            if (!Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "/Saves"))
+            {
+                Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "/Saves");
+            }
+            if (!Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "/PDF_Charts"))
+            {
+                Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "/PDF_Charts");
+            }
+
 
             paletteCount.Text = "Palette Count\n0 / " + dmcPaletteBox.Items.Count.ToString();
 
@@ -82,11 +97,6 @@ namespace DMCConverter
             coord = new int[2];
         }
         
-        /// <summary>
-        /// Allows the user to set the image they want to convert.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         public void LoadImageButon_Click(object sender, EventArgs e)
         {
             #region Load Image
@@ -104,6 +114,9 @@ namespace DMCConverter
                 //get path of selected file, and change file to png
                 sourceFile = openFileDialog1.FileName;
                 string targetFile = Path.ChangeExtension(sourceFile, "png");
+
+                fileName = sourceFile.Split('\\').Last();
+                fileName = fileName.Substring(0, fileName.Length - 4);
             }
 
             //load image png and assign it to an Image variable
@@ -130,11 +143,6 @@ namespace DMCConverter
             #endregion
         }
 
-        /// <summary>
-        /// called when user selects or deselects a dmc value from the selection box
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         public void dmcPaletteBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             //gets how many DMC values the user has selected
@@ -460,9 +468,9 @@ namespace DMCConverter
         public void SaveSession()
         {
             appdata.sourceFile = sourceFile;
+            appdata.fileName = fileName;
             appdata.dmcDataStrore = dmcDataStore;
             appdata.rgbArray = rgbArray;
-            Console.WriteLine($"saving array x ={rgbArrayToDrawFrom.GetLength(1)}, y={rgbArrayToDrawFrom.GetLength(0)}");
             appdata.rgbArrayToDrawFrom = rgbArrayToDrawFrom;
             appdata.selectedDMCValues = selectedDMCValues;
             appdata.maxSize = maxSize;
@@ -475,55 +483,81 @@ namespace DMCConverter
 
             string save = JsonConvert.SerializeObject(appdata, Formatting.Indented);
 
-            File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "/Save.json", save);
+            File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + $"/Saves/{fileName}.json", save);
+            File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + $"/LastSession.json", save);
         }
 
         //Load everything from save file
         public void LoadSession()
         {
             ApplicationData loadData = new ApplicationData();
-            string json = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "/Save.json");
-            loadData = JsonConvert.DeserializeObject<ApplicationData>(json);
 
-            loading = true;
-            converted = true;
-            imageLoaded = true;
-            sourceFile = loadData.sourceFile;
-            dmcDataStore = loadData.dmcDataStrore;
-            rgbArray = loadData.rgbArray;
-            
-            rgbArrayToDrawFrom = loadData.rgbArrayToDrawFrom;
-            Console.WriteLine($"loading array x ={rgbArrayToDrawFrom.GetLength(1)}, y={rgbArrayToDrawFrom.GetLength(0)}");
-            selectedDMCValues = loadData.selectedDMCValues;
-            maxSize = loadData.maxSize;
-            resized = ConvertImg.resizeImage(Image.FromFile(loadData.sourceFile),
-                                             loadData.imgWidth,
-                                             loadData.imgHeight,
-                                             maxSize);
-            toConvert = resized;
-            UserImageBox.Image = resized;
-            tickedCount = loadData.tickedCount;
-            numericUpDown2.Value = loadData.threadAmount;
-            threadAmount = loadData.threadAmount;
-            numericUpDown3.Value = loadData.imageGridSize;
-            numericUpDown1.Value = loadData.imgHeight;
-            WidthValue.Value = loadData.imgWidth;
-            imgWidth = loadData.imgWidth;
-            imgHeight = loadData.imgHeight;
-            markedPositions = loadData.markedPositions;
+            string json;
 
-            Console.WriteLine($"Loading [{loadData.sourceFile}]");
+            try
+            {
+                if (loadLast)
+                {
+                    json = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + $"/LastSession.json");
+                }
+                else
+                {
+                    openFileDialog1.Filter = "Saved Conversions (*.json) | *.json";
+                    openFileDialog1.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory + "Saves";
+                    openFileDialog1.ShowDialog();
+                    json = File.ReadAllText(openFileDialog1.FileName);
+                }
 
-            loading = false;
+                loadData = JsonConvert.DeserializeObject<ApplicationData>(json);
+
+                loading = true;
+                converted = true;
+                imageLoaded = true;
+                sourceFile = loadData.sourceFile;
+                fileName = loadData.fileName;
+                dmcDataStore = loadData.dmcDataStrore;
+                rgbArray = loadData.rgbArray;
+                rgbArrayToDrawFrom = loadData.rgbArrayToDrawFrom;
+                selectedDMCValues = loadData.selectedDMCValues;
+                maxSize = loadData.maxSize;
+                resized = ConvertImg.resizeImage(Image.FromFile(loadData.sourceFile),
+                                                 loadData.imgWidth,
+                                                 loadData.imgHeight,
+                                                 maxSize);
+                toConvert = resized;
+                UserImageBox.Image = resized;
+                tickedCount = loadData.tickedCount;
+                numericUpDown2.Value = loadData.threadAmount;
+                threadAmount = loadData.threadAmount;
+                numericUpDown3.Value = loadData.imageGridSize;
+                numericUpDown1.Value = loadData.imgHeight;
+                WidthValue.Value = loadData.imgWidth;
+                imgWidth = loadData.imgWidth;
+                imgHeight = loadData.imgHeight;
+                markedPositions = loadData.markedPositions;
+                loading = false;
+            }
+            catch (Exception)
+            {
+                return;
+            }
+
+            Invalidate();
         }
 
         private void saveButton_MouseClick(object sender, MouseEventArgs e)
         {
             SaveSession();
         }
+        private void LastSession_Click(object sender, EventArgs e)
+        {
+            loadLast = true;
+            LoadSession();
+        }
 
         private void loadButton_Click(object sender, EventArgs e)
         {
+            loadLast = false;
             LoadSession();
         }
 
@@ -533,7 +567,8 @@ namespace DMCConverter
             if (converted)
             {
                 ExportAsPDF export = new ExportAsPDF();
-                export.Create(image, dmcDataStore, selectedDMCValues);
+                image = Image.FromFile(sourceFile);
+                export.Create(image, dmcDataStore, selectedDMCValues, fileName);
             }
         }
 
@@ -553,6 +588,7 @@ namespace DMCConverter
 public class ApplicationData
 {
     public string sourceFile { get; set; }
+    public string fileName { get; set; }
     public string[,] dmcDataStrore { get; set; }
     public Color[,] rgbArray { get; set; }
     public Color[,] rgbArrayToDrawFrom { get; set; }

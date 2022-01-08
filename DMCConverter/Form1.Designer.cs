@@ -63,6 +63,7 @@
             this.loadButton = new System.Windows.Forms.Button();
             this.CreatePDF = new System.Windows.Forms.Button();
             this.LoadConversionDialog = new System.Windows.Forms.OpenFileDialog();
+            this.LastSession = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.UserImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.WidthValue)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
@@ -77,12 +78,14 @@
             // 
             // LoadImageButon
             // 
+            this.LoadImageButon.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.LoadImageButon.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.LoadImageButon.Location = new System.Drawing.Point(141, 169);
             this.LoadImageButon.Name = "LoadImageButon";
             this.LoadImageButon.Size = new System.Drawing.Size(75, 23);
             this.LoadImageButon.TabIndex = 0;
             this.LoadImageButon.Text = "Load Image";
-            this.LoadImageButon.UseVisualStyleBackColor = true;
+            this.LoadImageButon.UseVisualStyleBackColor = false;
             this.LoadImageButon.Click += new System.EventHandler(this.LoadImageButon_Click);
             // 
             // openFileDialog1
@@ -603,12 +606,14 @@
             // 
             // ConvertButton
             // 
-            this.ConvertButton.Location = new System.Drawing.Point(193, 410);
+            this.ConvertButton.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.ConvertButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ConvertButton.Location = new System.Drawing.Point(141, 418);
             this.ConvertButton.Name = "ConvertButton";
             this.ConvertButton.Size = new System.Drawing.Size(75, 23);
             this.ConvertButton.TabIndex = 6;
             this.ConvertButton.Text = "Convert";
-            this.ConvertButton.UseVisualStyleBackColor = true;
+            this.ConvertButton.UseVisualStyleBackColor = false;
             this.ConvertButton.Click += new System.EventHandler(this.ConvertButton_Click);
             // 
             // WidthValue
@@ -667,9 +672,9 @@
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(193, 439);
+            this.progressBar.Location = new System.Drawing.Point(136, 412);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(74, 13);
+            this.progressBar.Size = new System.Drawing.Size(85, 34);
             this.progressBar.TabIndex = 11;
             // 
             // AlgorithmType
@@ -719,6 +724,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.AutoScroll = true;
+            this.panel1.BackColor = System.Drawing.Color.Snow;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.pictureBox1);
             this.panel1.Location = new System.Drawing.Point(278, 25);
@@ -854,7 +860,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(100, 618);
+            this.label5.Location = new System.Drawing.Point(189, 667);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(63, 13);
             this.label5.TabIndex = 23;
@@ -870,43 +876,63 @@
             // 
             // saveButton
             // 
-            this.saveButton.Location = new System.Drawing.Point(193, 608);
+            this.saveButton.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.saveButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.saveButton.Location = new System.Drawing.Point(194, 560);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(75, 23);
             this.saveButton.TabIndex = 25;
             this.saveButton.Text = "Save";
-            this.saveButton.UseVisualStyleBackColor = true;
+            this.saveButton.UseVisualStyleBackColor = false;
             this.saveButton.MouseClick += new System.Windows.Forms.MouseEventHandler(this.saveButton_MouseClick);
             // 
             // loadButton
             // 
-            this.loadButton.Location = new System.Drawing.Point(193, 638);
+            this.loadButton.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.loadButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.loadButton.Location = new System.Drawing.Point(194, 601);
             this.loadButton.Name = "loadButton";
             this.loadButton.Size = new System.Drawing.Size(75, 23);
             this.loadButton.TabIndex = 26;
             this.loadButton.Text = "Load";
-            this.loadButton.UseVisualStyleBackColor = true;
+            this.loadButton.UseVisualStyleBackColor = false;
             this.loadButton.Click += new System.EventHandler(this.loadButton_Click);
             // 
             // CreatePDF
             // 
-            this.CreatePDF.Location = new System.Drawing.Point(103, 411);
+            this.CreatePDF.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.CreatePDF.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CreatePDF.Location = new System.Drawing.Point(103, 560);
             this.CreatePDF.Name = "CreatePDF";
             this.CreatePDF.Size = new System.Drawing.Size(75, 23);
             this.CreatePDF.TabIndex = 27;
-            this.CreatePDF.Text = "PDF";
-            this.CreatePDF.UseVisualStyleBackColor = true;
+            this.CreatePDF.Text = "Export PDF";
+            this.CreatePDF.UseVisualStyleBackColor = false;
             this.CreatePDF.Click += new System.EventHandler(this.CreatePDF_Click);
             // 
             // LoadConversionDialog
             // 
             this.LoadConversionDialog.FileName = "LoadConversionDialog";
             // 
+            // LastSession
+            // 
+            this.LastSession.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.LastSession.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.LastSession.Location = new System.Drawing.Point(103, 601);
+            this.LastSession.Name = "LastSession";
+            this.LastSession.Size = new System.Drawing.Size(75, 23);
+            this.LastSession.TabIndex = 28;
+            this.LastSession.Text = "Load Last";
+            this.LastSession.UseVisualStyleBackColor = false;
+            this.LastSession.Click += new System.EventHandler(this.LastSession_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.Snow;
             this.ClientSize = new System.Drawing.Size(1103, 717);
+            this.Controls.Add(this.LastSession);
             this.Controls.Add(this.CreatePDF);
             this.Controls.Add(this.loadButton);
             this.Controls.Add(this.saveButton);
@@ -977,6 +1003,7 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.OpenFileDialog LoadConversionDialog;
+        private System.Windows.Forms.Button LastSession;
     }
 }
 
