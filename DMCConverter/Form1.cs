@@ -124,14 +124,32 @@ namespace DMCConverter
             try
             {
                 image = Image.FromFile(sourceFile);
+                imageLoaded = true;
             }
             catch (Exception)
             {
                 return;
             }
 
-            //load image to image display box
-            UserImageBox.Image = image;
+            //load image to image display box, set it to fill the box
+            if (image.Width > image.Height)
+            {
+                UserImageBox.Image = ConvertImg.resizeImage(image,
+                                             image.Width,
+                                             image.Height,
+                                             UserImageBox.Width);
+            }
+            else
+            {
+                float ratio = (float)image.Width / (float)image.Height;
+                int newWidth = (int)(ratio * UserImageBox.Height);
+
+                UserImageBox.Image = ConvertImg.resizeImage(image,
+                                             image.Width,
+                                             image.Height,
+                                             newWidth);
+            }
+            
             toConvert = image;
 
             //resize image to 100 stitches
@@ -153,6 +171,7 @@ namespace DMCConverter
 
             //stores selected values as a list, later used in converting the iamge to DMC
             selectedDMCValues = new List<String>(dmcPaletteBox.CheckedItems.Cast<String>());
+            ResetProgressBar();
         }
 
         // Upon clicking the convert button, invoke the processImage method of the convertImage class
@@ -266,7 +285,6 @@ namespace DMCConverter
                 selectedDMCValues = new List<String>(dmcPaletteBox.CheckedItems.Cast<String>());
                 Invalidate();
             });
-            
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -285,7 +303,6 @@ namespace DMCConverter
 
             if (converted)
             {
-
                 Console.WriteLine($"drawing using array x ={rgbArrayToDrawFrom.GetLength(1)}, y={rgbArrayToDrawFrom.GetLength(0)}");
                 for (int i = 0; i < imgHeight; i++)
                 {
@@ -318,36 +335,38 @@ namespace DMCConverter
 
             //create a grid over the image, with a thicker grid, every 10 squares
             //thickness of grid lines are determined by the selected gridSize
-            for (int i = 0; i < Width + 1; i++)
+            if (imageLoaded)
             {
-                if (i % 10 == 0)
+                for (int i = 0; i < Width + 1; i++)
                 {
-                    gr.DrawLine(thickBlackPen, i * imageGridSize, 0, i * imageGridSize, imgHeight * imageGridSize);
+                    if (i % 10 == 0)
+                    {
+                        gr.DrawLine(thickBlackPen, i * imageGridSize, 0, i * imageGridSize, imgHeight * imageGridSize);
+                    }
+                    else
+                    {
+                        gr.DrawLine(blackPen, i * imageGridSize, 0, i * imageGridSize, imgHeight * imageGridSize);
+                    }
                 }
-                else
+
+                for (int i = 0; i < imgHeight + 1; i++)
                 {
-                    gr.DrawLine(blackPen, i * imageGridSize, 0, i * imageGridSize, imgHeight * imageGridSize);
+                    if (i % 10 == 0)
+                    {
+                        gr.DrawLine(thickBlackPen, 0, i * imageGridSize, Width * imageGridSize, i * imageGridSize);
+                    }
+                    else
+                    {
+                        gr.DrawLine(blackPen, 0, i * imageGridSize, Width * imageGridSize, i * imageGridSize);
+                    }
                 }
+
+                pictureBox1.Width = imgWidth * imageGridSize + 1;
+                pictureBox1.Height = imgHeight * imageGridSize + 1;
+
+                //draw image;
+                pictureBox1.Image = bm;
             }
-
-            for (int i = 0; i < imgHeight + 1; i++)
-            {
-                if (i % 10 == 0)
-                {
-                    gr.DrawLine(thickBlackPen, 0, i * imageGridSize, Width * imageGridSize, i * imageGridSize);
-                }
-                else
-                {
-                    gr.DrawLine(blackPen, 0, i * imageGridSize, Width * imageGridSize, i * imageGridSize);
-                }
-            }
-
-            pictureBox1.Width = imgWidth * imageGridSize + 1;
-            pictureBox1.Height = imgHeight * imageGridSize + 1;
-
-            //draw image;
-            pictureBox1.Image = bm;
-            
         }
 
         /// <summary>
@@ -376,10 +395,10 @@ namespace DMCConverter
                                                  maxSize);
 
                 //store resized image, ready to be colour matched and converted to DMC olny colours
-                UserImageBox.Image = resized;
                 numericUpDown1.Value = resized.Height;
 
                 //redraw the image
+                ResetProgressBar();
                 Invalidate();
             }
         }
@@ -389,11 +408,13 @@ namespace DMCConverter
         {
             threadAmount = (int)numericUpDown2.Value;
             System.Diagnostics.Debug.WriteLine(threadAmount);
+            ResetProgressBar();
         }
 
         private void numericUpDown3_ValueChanged(object sender, EventArgs e)
         {
             imageGridSize = (int)numericUpDown3.Value;
+            ResetProgressBar();
             Invalidate();
         }
 
@@ -536,6 +557,9 @@ namespace DMCConverter
                 imgHeight = loadData.imgHeight;
                 markedPositions = loadData.markedPositions;
                 loading = false;
+
+                progressBar.Value = 100;
+                ProgressBarText.Text = "Conversion Complete";
             }
             catch (Exception)
             {
@@ -547,7 +571,11 @@ namespace DMCConverter
 
         private void saveButton_MouseClick(object sender, MouseEventArgs e)
         {
-            SaveSession();
+            if (converted)
+            {
+                SaveSession();
+                ProgressBarText.Text = "Conversion Saved";
+            }
         }
         private void LastSession_Click(object sender, EventArgs e)
         {
@@ -576,11 +604,19 @@ namespace DMCConverter
         {
             dither = ditherCheckBox.Checked;
             Console.WriteLine($"Dithering = {dither}");
+            ResetProgressBar();
         }
 
         private void ditherFac_ValueChanged(object sender, EventArgs e)
         {
             ditherFactor = (float)ditherFac.Value;
+            ResetProgressBar();
+        }
+
+        private void ResetProgressBar()
+        {
+            progressBar.Value = 0;
+            ProgressBarText.Text = "";
         }
     }
 }

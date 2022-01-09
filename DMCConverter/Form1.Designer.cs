@@ -80,7 +80,7 @@
             // 
             this.LoadImageButon.BackColor = System.Drawing.Color.WhiteSmoke;
             this.LoadImageButon.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.LoadImageButon.Location = new System.Drawing.Point(141, 169);
+            this.LoadImageButon.Location = new System.Drawing.Point(147, 169);
             this.LoadImageButon.Name = "LoadImageButon";
             this.LoadImageButon.Size = new System.Drawing.Size(75, 23);
             this.LoadImageButon.TabIndex = 0;
@@ -96,8 +96,8 @@
             // 
             this.UserImageBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.UserImageBox.Location = new System.Drawing.Point(97, 25);
-            this.UserImageBox.MaximumSize = new System.Drawing.Size(200, 200);
-            this.UserImageBox.MinimumSize = new System.Drawing.Size(120, 120);
+            this.UserImageBox.MaximumSize = new System.Drawing.Size(175, 138);
+            this.UserImageBox.MinimumSize = new System.Drawing.Size(175, 138);
             this.UserImageBox.Name = "UserImageBox";
             this.UserImageBox.Size = new System.Drawing.Size(175, 138);
             this.UserImageBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -608,7 +608,7 @@
             // 
             this.ConvertButton.BackColor = System.Drawing.Color.WhiteSmoke;
             this.ConvertButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ConvertButton.Location = new System.Drawing.Point(141, 418);
+            this.ConvertButton.Location = new System.Drawing.Point(147, 417);
             this.ConvertButton.Name = "ConvertButton";
             this.ConvertButton.Size = new System.Drawing.Size(75, 23);
             this.ConvertButton.TabIndex = 6;
@@ -672,7 +672,7 @@
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(136, 412);
+            this.progressBar.Location = new System.Drawing.Point(142, 411);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(85, 34);
             this.progressBar.TabIndex = 11;
