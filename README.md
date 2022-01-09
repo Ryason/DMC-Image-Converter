@@ -16,6 +16,7 @@ DMC Image Converter is a tool used to create cross stitch patterns from images.
 - Save and load previous conversions and stitch markers.
 ---
 ### How To Use
+![](./Images/Demo.mov)
 - Load an image into the program by clicking the "Load Image" button.
 - Controll the size of your cross stich pattern by setting the width, with the "Width" controll box.
 - Select from the list of DMC values which colours you would like to use with your pattern.
